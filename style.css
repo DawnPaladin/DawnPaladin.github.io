@@ -1,0 +1,22 @@
+#content {
+	width: 800px;
+	margin: auto;
+}
+
+#mainLogo {
+	width: 510px;
+	margin: 50px auto;
+	display: block;
+}
+
+.portfolioNarrow, .portfolioWide {
+	margin: 7px 8px;
+	float: left;
+}
+
+.portfolioNarrow img {
+	width: 256px;
+}
+.portfolioWide img {
+	width: 510px;
+}
