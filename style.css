@@ -9,6 +9,15 @@
 	display: block;
 }
 
+a {
+	color: #821517;
+}
+
+.social {
+	margin: 0 auto 1em;
+	text-align: center;
+}
+
 .portfolioNarrow, .portfolioWide {
 	margin: 7px 8px;
 	float: left;
