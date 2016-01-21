@@ -1,6 +1,13 @@
+body { margin: 0; }
 a {
 	color: #821517;
 }
 .animated-bg {
 	height: 400px;
+}
+.featured-row {
+	display: flex;
+}
+.preview-graphic img {
+	max-width: 100%;
 }
