@@ -11,3 +11,8 @@ a {
 .preview-graphic img {
 	max-width: 100%;
 }
+.small-projects-row {
+	background-color: gray;
+	padding: 1em;
+	text-align: center;
+}
