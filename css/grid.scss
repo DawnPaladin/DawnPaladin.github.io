@@ -1,0 +1,18 @@
+$page-margin-width: 10%;
+
+.stripe {
+	display: flex;
+	flex-direction: column;
+	background-color: gray;
+	padding-left: $page-margin-width;
+	padding-right: $page-margin-width;
+	.row {
+		display: flex;
+		.half-column {
+			width: 48%;
+		}
+		.half-column.left {
+			margin-right: 1%;
+		}
+	}
+}
