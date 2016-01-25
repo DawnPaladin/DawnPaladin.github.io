@@ -1,18 +1,21 @@
 $page-margin-width: 10%;
+$mobile-width: 990px;
 
 .stripe {
 	display: flex;
 	flex-direction: column;
-	background-color: gray;
-	padding-left: $page-margin-width;
-	padding-right: $page-margin-width;
+	background-color: gainsboro;
+	padding: 1em $page-margin-width;
+	margin-bottom: 1em;
 	.row {
 		display: flex;
 		.half-column {
 			width: 48%;
-		}
-		.half-column.left {
+			margin-left: 1%;
 			margin-right: 1%;
 		}
+	}
+	.row:nth-child(even) {
+		flex-direction: row-reverse;
 	}
 }

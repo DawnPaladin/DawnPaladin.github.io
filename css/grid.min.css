@@ -1,1 +1,1 @@
-.stripe{display:flex;flex-direction:column;background-color:gray;padding-left:10%;padding-right:10%}.stripe .row{display:flex}.stripe .row .half-column{width:48%}.stripe .row .half-column.left{margin-right:1%}
+.stripe{display:flex;flex-direction:column;background-color:gainsboro;padding:1em 10%;margin-bottom:1em}.stripe .row{display:flex}.stripe .row .half-column{width:48%;margin-left:1%;margin-right:1%}.stripe .row:nth-child(even){flex-direction:row-reverse}

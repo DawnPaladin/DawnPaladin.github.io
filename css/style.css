@@ -2,6 +2,13 @@ body { margin: 0; }
 a {
 	color: #821517;
 }
+p {
+	font-family: "Exo", sans-serif;
+}
+.stripe h1 {
+	font-family: "Exo", sans-serif;
+	text-align: center;
+}
 .animated-bg {
 	height: 400px;
 }
@@ -15,4 +22,8 @@ a {
 	background-color: gray;
 	padding: 1em;
 	text-align: center;
+}
+.stripe.intro-text {
+	font-size: 22px;
+	padding: 1em 20%;
 }
