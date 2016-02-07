@@ -11,6 +11,8 @@ p {
 }
 .animated-bg {
 	height: 400px;
+	background: url("/img/Header-mockup.png");
+	background-position: center;
 }
 .featured-row {
 	display: flex;
