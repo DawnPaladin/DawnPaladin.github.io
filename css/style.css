@@ -5,7 +5,7 @@ a {
 p {
 	font-family: "Exo", sans-serif;
 }
-.stripe h1 {
+h1 {
 	font-family: "Exo", sans-serif;
 	text-align: center;
 }
@@ -14,11 +14,31 @@ p {
 	background: url("/img/Header-mockup.png");
 	background-position: center;
 }
-.featured-row {
-	display: flex;
+.portfolio .block {
+	width: 400px;
+	margin: 20px auto;
+	display: block;
+	border: 2px solid hsl(0, 0%, 10%);
+	box-sizing: border-box;
 }
-.preview-graphic img {
-	max-width: 100%;
+.block.text {
+	background-color: white;
+	padding: 0 1em;
+}
+.vertical-join {
+	background-image: url('/img/vertical-join.png');
+	background-position: center;
+	background-repeat: repeat-y;
+	width: 400px;
+	height: 40px;
+	display: block;
+	margin-top: -20px;
+	margin-bottom: -20px;
+}
+.vertical-divider {
+	display: block;
+	height: 50px;
+	width: 400px;
 }
 .small-projects-row {
 	background-color: gray;

@@ -7,7 +7,7 @@ $mobile-width: 990px;
 	background-color: gainsboro;
 	padding: 1em $page-margin-width;
 	margin-bottom: 1em;
-	.row {
+	.item-group {
 		display: flex;
 		.half-column {
 			width: 48%;
@@ -15,7 +15,26 @@ $mobile-width: 990px;
 			margin-right: 1%;
 		}
 	}
-	.row:nth-child(even) {
+	.item-group:nth-child(even) {
 		flex-direction: row-reverse;
+	}
+}
+
+section.portfolio {
+	padding: 1em $page-margin-width;
+	display: flex;
+	flex-direction: row;
+	.spine {
+		flex-grow: 1;
+		width: 50px;
+		background-color: white;
+		min-height: 500px;
+	}
+	.column {
+		flex-grow: 5;
+		background-color: lavender;
+		min-height: 500px;
+		display: flex;
+		flex-direction: column;
 	}
 }

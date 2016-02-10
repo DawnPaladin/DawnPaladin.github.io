@@ -6,8 +6,8 @@
 	<link href="css/style.css" rel="stylesheet" type="text/css">
 	<link href="css/grid.min.css" rel="stylesheet" type="text/css">
 	<link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-	<link href='https://fonts.googleapis.com/css?family=Exo:400,700,400italic|Exo+2:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+	<!-- <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"> -->
+	<!-- <link href='https://fonts.googleapis.com/css?family=Exo:400,700,400italic|Exo+2:400,400italic,700,700italic' rel='stylesheet' type='text/css'> -->
 </head>
 
 <body>
@@ -32,15 +32,12 @@
 <!-- <div class="stripe intro-text">
 	<p>I tackle complex concepts and make them easy to understand.</p>
 </div> -->
-<section class="stripe">
-	<h1>Portfolio</h1>
-	<div class="row">
-		<div class="preview-graphic half-column">
-			<a href="http://designthroughstorytelling.net/periodic/">
-				<img src="/img/ptos-preview.png" alt="Periodic Table of Storytelling preview">
-			</a>
-		</div>
-		<div class="item-text half-column">
+<h1>Portfolio</h1>
+<section class="portfolio">
+	<div class="column">
+		<img src="/img/ptos-preview.png" alt="Periodic Table of Storytelling preview" class="block">
+		<div class="vertical-join"></div>
+		<div class="block text">
 			<p>Stories make use of recurring ideas called "tropes" which repeat across genres and through time. The community at <a href="http://www.tvtropes.org">TVTropes.org</a> catalogues these tropes in an enormous wiki, collecting examples for every imaginable trope with light-hearted glee. I created <a href="http://designthroughstorytelling.net/periodic/"><strong>the Periodic Table of Storytelling</strong></a> as an introduction to TVTropes; it's an infographic that organizes the basic building blocks of storytelling into a familiar format.</p>
 			<p>Featured on
 				<a href="http://gizmodo.com/let-this-periodic-table-of-storytelling-destroy-your-wr-1515075040">Gizmodo</a>,
@@ -51,25 +48,23 @@
 				<a href="http://www.fastcodesign.com/3025995/infographic-of-the-day/infographic-the-periodic-table-of-storytelling">Fast Company</a>, and
 				<a href="http://designtaxi.com/news/363515/Chart-The-Periodic-Table-Of-Storytelling/">Design Taxi</a>, with over 1.3 million views.
 		</div>
-	</div>
-	<div class="row">
-		<div class="preview-graphic half-column">
-			<a href="http://www.mfwbooks.com/products/39/">
-				<img src="/img/flc-screenshot.png" alt="Family Learning Cycle screenshot">
-			</a>
-		</div>
-		<div class="item-text half-column">
-			<p>My Father's World has a very unusual curriculum system which saves parents a lot of time but can be difficult to explain. So I designed and coded an interactive infographic that uses HTML5 <code>&lt;canvas&gt;</code> to first show parents how it works and then let them play around it as much as they like.</p>
-		</div>
-	</div>
-	<div class="row">
-		<div class="preview-graphic half-column">
-			<a href="http://www.designthroughstorytelling.net/principles/">
-				<img src="/img/principles-preview.jpg" alt="Principles of Heroism screenshot">
-			</a>
-		</div>
-		<div class="item-text half-column">
+		<div class="vertical-divider"></div>
+		<a href="http://www.designthroughstorytelling.net/principles/">
+			<img src="/img/principles-preview.jpg" alt="Principles of Heroism screenshot" class="block">
+		</a>
+		<div class="vertical-join"></div>
+		<div class="block text">
 			<p>Part coding exercise, part writing project, I made this to help me codify some ethical principles I've been developing in my own life.</p>
+		</div>
+	</div>
+	<div class="spine"></div>
+	<div class="column">
+		<div class="vertical-divider"></div>
+		<div class="vertical-divider"></div>
+		<img src="/img/flc-screenshot.png" alt="Family Learning Cycle screenshot" class="block">
+		<div class="vertical-join"></div>
+		<div class="block text">
+			<p>My Father's World has a very unusual curriculum system which saves parents a lot of time but can be difficult to explain. So I designed and coded an interactive infographic that uses HTML5 <code>&lt;canvas&gt;</code> to first show parents how it works and then let them play around it as much as they like.</p>
 		</div>
 	</div>
 </section>
