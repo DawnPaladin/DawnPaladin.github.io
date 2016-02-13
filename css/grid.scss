@@ -22,17 +22,18 @@ $mobile-width: 990px;
 
 section.portfolio {
 	padding: 1em $page-margin-width;
+	max-width: 1000px;
+	margin: auto;
 	display: flex;
 	flex-direction: row;
 	.spine {
-		flex-grow: 1;
 		width: 50px;
 		background-color: white;
 		min-height: 500px;
 	}
 	.column {
 		flex-grow: 5;
-		background-color: lavender;
+		// background-color: lavender;
 		min-height: 500px;
 		display: flex;
 		flex-direction: column;
