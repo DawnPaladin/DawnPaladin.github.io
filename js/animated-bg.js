@@ -21,6 +21,26 @@ var animatedBg = (function() {
 		exports.stage.addChild(circle);
 		exports.stage.update();
 	};
-	exports.testCanvas();
+	var strokeWeight = 10;
+	var strokeColor = "silver";
+	var fillColor = "white";
+	var radius = 20;
+	exports.createRandomShape = function (x, y) {
+		var shape = new createjs.Shape();
+		shape.graphics.setStrokeStyle("8").beginStroke("silver").beginFill("white");
+		var r = Math.random();
+		if (r > 0.6) { // circle
+			shape.graphics.drawCircle(0, 0, radius);
+		} else if (r > 0.3) { // square
+			shape.graphics.drawRect(-radius, -radius, radius*2, radius*2);
+		} else {
+			shape.graphics.drawPolyStar(0, 0, radius, 3, 0, r * 360);
+		}
+		shape.x = x;
+		shape.y = y;
+		exports.stage.addChild(shape);
+		exports.stage.update();
+	};
+	exports.createRandomShape(100, 100);
 	return exports;
 })();
