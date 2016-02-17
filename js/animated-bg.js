@@ -41,6 +41,14 @@ var animatedBg = (function() {
 		exports.stage.addChild(shape);
 		exports.stage.update();
 	};
-	exports.createRandomShape(100, 100);
+	exports.createRandomShapes = function(minX, maxX, minY, maxY, quantity) {
+		var x, y;
+		for (var i = 0; i < quantity; i++) {
+			x = ((maxX - minX) * Math.random()) + minX;
+			y = ((maxY - minY) * Math.random()) + minY;
+			exports.createRandomShape(x, y);
+		}
+	};
+	exports.createRandomShapes(300, 1000, 100, 300, 50);
 	return exports;
 })();
