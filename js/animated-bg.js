@@ -51,6 +51,37 @@ var animatedBg = function () {
 			exports.createRandomShape(x, y);
 		}
 	};
-	exports.createRandomShapes(300, 1000, 100, 300, 50);
+	exports.buildDockingTree = function (yOrigin, treeLength) {
+		const nodeRadius = 10;
+		const treeColor = "silver";
+		const trunkSegmentWidth = 8;
+		const trunkSegmentLength = 50; // originates at the center of the previous node
+
+		var dockingTree = new createjs.Container();
+		dockingTree.name = "dockingTree";
+		dockingTree.y = yOrigin;
+		var origin = new createjs.Shape();
+		origin.graphics.beginFill(treeColor).drawCircle(0, 0, nodeRadius);
+		dockingTree.addChild(origin);
+		var trunk = new createjs.Container();
+		trunk.name = "trunk";
+		dockingTree.addChild(trunk);
+		var trunkCursor = 0;
+
+		for (let i = 0; i < treeLength; i++) {
+			let trunkSegment = new createjs.Shape();
+			trunkSegment.graphics.beginFill(treeColor).drawRect(trunkCursor, -0.5 * trunkSegmentWidth, trunkSegmentLength, trunkSegmentWidth);
+			trunk.addChild(trunkSegment);
+			trunkCursor = (i + 1) * trunkSegmentLength;
+
+			let trunkNode = new createjs.Shape();
+			trunkNode.graphics.beginFill(treeColor).drawCircle(trunkCursor, 0, nodeRadius);
+			trunk.addChild(trunkNode);
+		}
+
+		exports.stage.addChild(dockingTree);
+		exports.stage.update();
+	};
+	exports.buildDockingTree(300, 10);
 	return exports;
 }();
