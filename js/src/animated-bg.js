@@ -49,6 +49,7 @@ var animatedBg = (function() {
 			exports.createRandomShape(x, y);
 		}
 	};
+	exports.registry = {};
 	exports.buildDockingTree = function(yOrigin, treeLength) {
 		const nodeRadius = 10;
 		const treeColor = "silver";
@@ -66,6 +67,18 @@ var animatedBg = (function() {
 		dockingTree.addChild(trunk);
 		var trunkCursor = 0;
 
+		exports.registry.dockingTree = {
+			object: dockingTree,
+			origin: {
+				x: 0,
+				y: yOrigin
+			},
+			trunk: {
+				object: trunk,
+				nodes: [],
+			}
+		};
+
 		for (let i = 0; i < treeLength; i++) {
 			let trunkSegment = new createjs.Shape();
 			trunkSegment
@@ -77,11 +90,68 @@ var animatedBg = (function() {
 			let trunkNode = new createjs.Shape();
 			trunkNode.graphics.beginFill(treeColor).drawCircle(trunkCursor, 0, nodeRadius);
 			trunk.addChild(trunkNode);
+			var registryEntry = {
+				type: "trunkSegmentDescription",
+				x: trunkCursor,
+				y: 0,
+				object: trunkNode,
+			};
+			exports.registry.dockingTree.trunk.nodes.push(registryEntry);
 		}
 
 		exports.stage.addChild(dockingTree);
 		exports.stage.update();
+
+		exports.registry.dockingTree.branches = [];
+		var buildDescendingBranch = function(xOrigin, yOrigin) {
+			var branch = new createjs.Container();
+			dockingTree.addChild(branch);
+
+			branch.x = xOrigin;
+			branch.y = yOrigin;
+			const branchLength = 3;
+			const branchSegmentLength = trunkSegmentLength;
+			const branchSegmentWidth = trunkSegmentWidth;
+
+			var branchRegistryEntry = {
+				type: "branchDescription",
+				x: xOrigin,
+				y: yOrigin,
+				nodes: [],
+			}
+
+			var branchCursor = 0;
+			for (let i = 0; i < branchLength; i++) { // create the segments
+				let branchSegment = new createjs.Shape();
+				branchSegment
+					.graphics.beginFill(treeColor)
+					.drawRect(branchSegmentWidth * -0.5, branchCursor, branchSegmentWidth, branchSegmentLength);
+				branch.addChild(branchSegment);
+				branchCursor += branchSegmentLength;
+			}
+			branchCursor = branchSegmentLength; // go back and create the nodes and documentation
+			for (let i = 0; i < branchLength; i++) {
+				let branchNode = new createjs.Shape();
+				branchNode
+					.graphics.beginFill(treeColor)
+					.drawCircle(0, branchCursor, nodeRadius);
+				branch.addChild(branchNode);
+
+				var nodeRegistryEntry = {
+					type: "branchNodeDescription",
+					x: 0,
+					y: branchCursor,
+					object: branchNode,
+				}
+				branchRegistryEntry.nodes.push(nodeRegistryEntry);
+
+				branchCursor += branchSegmentLength;
+			}
+			exports.registry.dockingTree.branches.push(branchRegistryEntry);
+			exports.stage.update();
+		};
+		buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[1].x, 0);
 	};
-	exports.buildDockingTree(300, 10);
+	exports.buildDockingTree(100, 10);
 	return exports;
 })();
