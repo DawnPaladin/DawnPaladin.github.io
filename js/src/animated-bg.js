@@ -79,6 +79,7 @@ var animatedBg = (function() {
 				nodes: [],
 			}
 		};
+		exports.registry.dockingTree.leaves = [];
 
 		for (let i = 0; i < treeLength; i++) {
 			let trunkSegment = new createjs.Shape();
@@ -105,6 +106,35 @@ var animatedBg = (function() {
 
 		exports.registry.dockingTree.branches = [];
 		var buildDescendingBranch = function(xOrigin, yOrigin) {
+			var buildLeaf = function(xOrigin, yOrigin) {
+				const stemWidth = 2;
+				const stemLength = trunkSegmentLength;
+				var leafStem = new createjs.Shape();
+				leafStem
+					.graphics.beginFill(treeColor)
+					.drawRect(xOrigin, yOrigin-stemWidth/2, stemLength, stemWidth);
+				branch.addChild(leafStem);
+				const leafRadius = nodeRadius;
+				const leafStrokeWeight = 2;
+				var leaf = new createjs.Shape();
+				var leafCenterX = xOrigin + stemLength;
+				var leafCenterY = yOrigin;
+				leaf.graphics.setStrokeStyle(leafStrokeWeight);
+				leaf.graphics.beginStroke(treeColor);
+				console.log(leafCenterX, leafCenterY, leafRadius);
+				leaf
+					.graphics.beginFill("white")
+					.drawCircle(leafCenterX, leafCenterY, leafRadius);
+				branch.addChild(leaf);
+				var leafRegistryEntry = {
+					type: "leafDescription",
+					branch: branch,
+					x: leafCenterX,
+					y: leafCenterY,
+					object: leaf,
+				};
+				exports.registry.dockingTree.leaves.push(leafRegistryEntry);
+			};
 			var branch = new createjs.Container();
 			dockingTree.addChild(branch);
 
@@ -145,6 +175,8 @@ var animatedBg = (function() {
 					object: branchNode,
 				};
 				branchRegistryEntry.nodes.push(nodeRegistryEntry);
+
+				buildLeaf(0, branchCursor);
 
 				branchCursor += branchSegmentLength;
 			}
