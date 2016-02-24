@@ -118,7 +118,7 @@ var animatedBg = (function() {
 				x: xOrigin,
 				y: yOrigin,
 				nodes: [],
-			}
+			};
 
 			var branchCursor = 0;
 			for (let i = 0; i < branchLength; i++) { // create the segments
@@ -142,7 +142,7 @@ var animatedBg = (function() {
 					x: 0,
 					y: branchCursor,
 					object: branchNode,
-				}
+				};
 				branchRegistryEntry.nodes.push(nodeRegistryEntry);
 
 				branchCursor += branchSegmentLength;
