@@ -1,3 +1,4 @@
+"use strict";
 document.getElementById('animated-bg').width = window.innerWidth;
 
 var animatedBg = (function() {
