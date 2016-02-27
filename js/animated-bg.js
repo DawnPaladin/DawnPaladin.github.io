@@ -44,6 +44,7 @@ var animatedBg = function () {
 		shape.y = y;
 		exports.stage.addChild(shape);
 		exports.stage.update();
+		return shape;
 	};
 	exports.createRandomShapes = function (minX, maxX, minY, maxY, quantity) {
 		var x, y;
@@ -120,7 +121,6 @@ var animatedBg = function () {
 				var leafCenterY = yOrigin;
 				leaf.graphics.setStrokeStyle(leafStrokeWeight);
 				leaf.graphics.beginStroke(treeColor);
-				console.log(leafCenterX, leafCenterY, leafRadius);
 				leaf.graphics.beginFill("white").drawCircle(leafCenterX, leafCenterY, leafRadius);
 				branch.addChild(leaf);
 				var leafRegistryEntry = {
@@ -145,6 +145,7 @@ var animatedBg = function () {
 				type: "branchDescription",
 				x: xOrigin,
 				y: yOrigin,
+				object: branch,
 				nodes: []
 			};
 
@@ -177,8 +178,24 @@ var animatedBg = function () {
 			exports.registry.dockingTree.branches.push(branchRegistryEntry);
 			exports.stage.update();
 		};
-		buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[1].x, 0);
+		buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[0].x, 0);
 	};
-	exports.buildDockingTree(100, 10);
+	exports.animTest = function () {
+		function tick() {
+			exports.stage.update();
+		}
+		function animationComplete() {
+			console.log("Animation complete");
+		}
+		exports.buildDockingTree(100, 5);
+		var shape = exports.createRandomShape(400, 200);
+		var container = exports.registry.dockingTree.branches[0].object;
+		var destination = exports.registry.dockingTree.leaves[1];
+		container.addChild(shape);
+		exports.stage.update();
+		var tween = createjs.Tween.get(shape).to({ x: destination.x, y: destination.y }, 1000).call(animationComplete);
+		createjs.Ticker.addEventListener("tick", tick);
+		createjs.Ticker.setFPS(60);
+	}();
 	return exports;
 }();
