@@ -187,20 +187,23 @@ var animatedBg = (function() {
 		buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[0].x, 0);
 	};
 	exports.animTest = (function() {
+		var Ease = createjs.Ease;
 		function tick() {
 			exports.stage.update();
 		}
 		function animationComplete() {
+			shape.x = leaf.x;
+			shape.y = leaf.y;
+			container.addChild(shape);
 			console.log("Animation complete");
 		}
 		exports.buildDockingTree(100, 5);
-		var shape = exports.createRandomShape(400, 200);
+		var shape = exports.createRandomShape(400, 100);
 		var container = exports.registry.dockingTree.branches[0].object;
-		var destination = exports.registry.dockingTree.leaves[1];
-		container.addChild(shape);
-		exports.stage.update();
+		var leaf = exports.registry.dockingTree.leaves[1];
+		var destination = container.localToGlobal(leaf.x, leaf.y);
 		var tween = createjs.Tween.get(shape)
-			.to({x: destination.x, y: destination.y}, 1000)
+			.to(destination, 1000, Ease.quintInOut)
 			.call(animationComplete);
 		createjs.Ticker.addEventListener("tick", tick);
 		createjs.Ticker.setFPS(60);
