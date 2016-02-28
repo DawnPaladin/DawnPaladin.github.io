@@ -44,12 +44,15 @@ var animatedBg = (function() {
 		return shape;
 	};
 	exports.createRandomShapes = function(minX, maxX, minY, maxY, quantity) {
+		var shapes = [];
 		var x, y;
 		for (var i = 0; i < quantity; i++) {
 			x = ((maxX - minX) * Math.random()) + minX;
 			y = ((maxY - minY) * Math.random()) + minY;
-			exports.createRandomShape(x, y);
+			var shape = exports.createRandomShape(x, y);
+			shapes.push(shape);
 		}
+		return shapes;
 	};
 	exports.registry = {};
 	exports.buildDockingTree = function(yOrigin, treeLength) {
@@ -185,26 +188,31 @@ var animatedBg = (function() {
 			exports.stage.update();
 		};
 		buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[0].x, 0);
+		buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[3].x, 0);
+		buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[6].x, 0);
 	};
 	exports.animTest = (function() {
 		var Ease = createjs.Ease;
 		function tick() {
 			exports.stage.update();
 		}
-		function animationComplete() {
+		function animationComplete(shape, leaf, container) {
 			shape.x = leaf.x;
 			shape.y = leaf.y;
 			container.addChild(shape);
-			console.log("Animation complete");
 		}
-		exports.buildDockingTree(100, 5);
-		var shape = exports.createRandomShape(400, 100);
-		var container = exports.registry.dockingTree.branches[0].object;
-		var leaf = exports.registry.dockingTree.leaves[1];
-		var destination = container.localToGlobal(leaf.x, leaf.y);
-		var tween = createjs.Tween.get(shape)
-			.to(destination, 1000, Ease.quintInOut)
-			.call(animationComplete);
+		exports.buildDockingTree(100, 10);
+		var shapes = exports.createRandomShapes(800, 1000, 100, 300, 9);
+		var leaves = exports.registry.dockingTree.leaves;
+		shapes.forEach(function(shape, i) {
+			var leafInfo = leaves[i];
+			var leafObj = leafInfo.object;
+			var container = leafObj.parent;
+			var destination = container.localToGlobal(leafInfo.x, leafInfo.y);
+			createjs.Tween.get(shape)
+				.to(destination, 1000, Ease.quintInOut)
+				.call(animationComplete, [shape, leafInfo, container]);
+		});
 		createjs.Ticker.addEventListener("tick", tick);
 		createjs.Ticker.setFPS(60);
 	})();
