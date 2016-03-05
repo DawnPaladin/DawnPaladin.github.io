@@ -52,18 +52,20 @@ var animatedBg = (function() {
 		return shapes;
 	};
 	exports.registry = {};
-	exports.buildDockingTree = function(yOrigin, treeLength) {
+	exports.initDockingTree = function(yOrigin) {
 		var dockingTree = new createjs.Container();
 		dockingTree.name = "dockingTree";
 		dockingTree.y = yOrigin;
+		exports.stage.addChild(dockingTree);
 		var origin = new createjs.Shape();
 		origin.graphics.beginFill(treeColor).drawCircle(0, 0, nodeRadius);
 		dockingTree.addChild(origin);
 		var trunk = new createjs.Container();
 		trunk.name = "trunk";
 		dockingTree.addChild(trunk);
-		var trunkCursor = 0;
+		exports.stage.update();
 
+		exports.registry.trunkCursor = 0;
 		exports.registry.dockingTree = {
 			object: dockingTree,
 			origin: {
@@ -75,31 +77,31 @@ var animatedBg = (function() {
 				nodes: [],
 			}
 		};
+		exports.registry.dockingTree.branches = [];
 		exports.registry.dockingTree.leaves = [];
-
+	};
+	exports.extendDockingTree = function(treeLength) {
 		for (let i = 0; i < treeLength; i++) {
+			var trunk = exports.registry.dockingTree.trunk.object;
 			let trunkSegment = new createjs.Shape();
 			trunkSegment
 				.graphics.beginFill(treeColor)
-				.drawRect(trunkCursor, -0.5*trunkSegmentWidth, trunkSegmentLength, trunkSegmentWidth);
+				.drawRect(exports.registry.trunkCursor, -0.5*trunkSegmentWidth, trunkSegmentLength, trunkSegmentWidth);
 			trunk.addChild(trunkSegment);
-			trunkCursor = (i + 1) * trunkSegmentLength;
+			exports.registry.trunkCursor = (i + 1) * trunkSegmentLength;
 
 			let trunkNode = new createjs.Shape();
-			trunkNode.graphics.beginFill(treeColor).drawCircle(trunkCursor, 0, nodeRadius);
+			trunkNode.graphics.beginFill(treeColor).drawCircle(exports.registry.trunkCursor, 0, nodeRadius);
 			trunk.addChild(trunkNode);
 			var registryEntry = {
 				type: "trunkSegmentDescription",
-				x: trunkCursor,
+				x: exports.registry.trunkCursor,
 				y: 0,
 				object: trunkNode,
 			};
 			exports.registry.dockingTree.trunk.nodes.push(registryEntry);
 		}
-		exports.stage.addChild(dockingTree);
 		exports.stage.update();
-
-		exports.registry.dockingTree.branches = [];
 	};
 	exports.buildDescendingBranch = function(xOrigin, yOrigin) {
 		var buildLeaf = function(xOrigin, yOrigin) {
@@ -193,7 +195,9 @@ var animatedBg = (function() {
 			shape.y = leaf.y;
 			container.addChild(shape);
 		}
-		exports.buildDockingTree(100, 10);
+
+		exports.initDockingTree(100);
+		exports.extendDockingTree(10);
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[0].x, 0);
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[3].x, 0);
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[6].x, 0);
@@ -211,6 +215,7 @@ var animatedBg = (function() {
 		});
 		createjs.Ticker.addEventListener("tick", tick);
 		createjs.Ticker.setFPS(60);
+
 	})();
 	return exports;
 })();
