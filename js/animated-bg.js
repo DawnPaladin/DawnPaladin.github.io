@@ -174,8 +174,12 @@ var animatedBg = function () {
 		exports.stage.update();
 	};
 	exports.animTest = function () {
-		var Ease = createjs.Ease;
-		function tick() {
+		const Ease = createjs.Ease;
+		const xOffsetPerSecond = -0.025;
+		function tick(event) {
+			var timeElapsed = createjs.Ticker.getTime();
+			var xOffset = timeElapsed * xOffsetPerSecond;
+			exports.registry.dockingTree.object.x = xOffset;
 			exports.stage.update();
 		}
 		function animationComplete(shape, leaf, container) {
@@ -194,6 +198,7 @@ var animatedBg = function () {
 			var leafObj = leafInfo.object;
 			var container = leafObj.parent;
 			var destination = container.localToGlobal(leafInfo.x, leafInfo.y);
+			destination.x = destination.x + xOffsetPerSecond * 1000; // compensate for drift
 			createjs.Tween.get(shape).to(destination, 1000, Ease.quintInOut).call(animationComplete, [shape, leafInfo, container]);
 		});
 		createjs.Ticker.addEventListener("tick", tick);
