@@ -75,7 +75,8 @@ var animatedBg = (function() {
 			trunk: {
 				object: trunk,
 				nodes: [],
-			}
+			},
+			paused: true,
 		};
 		exports.registry.dockingTree.branches = [];
 		exports.registry.dockingTree.leaves = [];
@@ -190,22 +191,22 @@ var animatedBg = (function() {
 		function tick(event) {
 			var timeElapsed = createjs.Ticker.getTime();
 			var trunkLength = exports.registry.dockingTree.trunk.nodes.length;
+			if (!exports.registry.dockingTree.paused) {
+				// drift tree to the left
+				var xOffset = timeElapsed * xOffsetPerSecond;
+				exports.registry.dockingTree.object.x = xOffset;
 
-			// drift tree to the left
-			var xOffset = timeElapsed * xOffsetPerSecond;
-			exports.registry.dockingTree.object.x = xOffset;
-
-			// extend tree periodically
-			var timeSinceLastTreeExtension = timeElapsed - timeOfLastTreeExtension;
-			if (timeSinceLastTreeExtension > treeExtensionInterval) {
-				exports.extendDockingTree(1);
-				timeOfLastTreeExtension = timeElapsed;
-				if (trunkLength - intervalBetweenBranches >= exports.registry.dockingTree.lastNodeWithABranch) {
-					exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[trunkLength].x, 0);
-					exports.registry.dockingTree.lastNodeWithABranch = trunkLength;
+				// extend tree periodically
+				var timeSinceLastTreeExtension = timeElapsed - timeOfLastTreeExtension;
+				if (timeSinceLastTreeExtension > treeExtensionInterval) {
+					exports.extendDockingTree(1);
+					timeOfLastTreeExtension = timeElapsed;
+					if (trunkLength - intervalBetweenBranches >= exports.registry.dockingTree.lastNodeWithABranch) {
+						exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[trunkLength].x, 0);
+						exports.registry.dockingTree.lastNodeWithABranch = trunkLength;
+					}
 				}
 			}
-
 			exports.stage.update();
 		}
 		function animationComplete(shape, leaf, container) {
