@@ -88,7 +88,7 @@ var animatedBg = (function() {
 				.graphics.beginFill(treeColor)
 				.drawRect(exports.registry.trunkCursor, -0.5*trunkSegmentWidth, trunkSegmentLength, trunkSegmentWidth);
 			trunk.addChild(trunkSegment);
-			exports.registry.trunkCursor = (i + 1) * trunkSegmentLength;
+			exports.registry.trunkCursor += trunkSegmentLength;
 
 			let trunkNode = new createjs.Shape();
 			trunkNode.graphics.beginFill(treeColor).drawCircle(exports.registry.trunkCursor, 0, nodeRadius);
@@ -184,10 +184,28 @@ var animatedBg = (function() {
 	exports.animTest = (function() {
 		const Ease = createjs.Ease;
 		const xOffsetPerSecond = -0.025;
+		const treeExtensionInterval = 2000;
+		const intervalBetweenBranches = 3;
+		var timeOfLastTreeExtension = 0;
 		function tick(event) {
 			var timeElapsed = createjs.Ticker.getTime();
+			var trunkLength = exports.registry.dockingTree.trunk.nodes.length;
+
+			// drift tree to the left
 			var xOffset = timeElapsed * xOffsetPerSecond;
 			exports.registry.dockingTree.object.x = xOffset;
+
+			// extend tree periodically
+			var timeSinceLastTreeExtension = timeElapsed - timeOfLastTreeExtension;
+			if (timeSinceLastTreeExtension > treeExtensionInterval) {
+				exports.extendDockingTree(1);
+				timeOfLastTreeExtension = timeElapsed;
+				if (trunkLength - intervalBetweenBranches >= exports.registry.dockingTree.lastNodeWithABranch) {
+					exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[trunkLength].x, 0);
+					exports.registry.dockingTree.lastNodeWithABranch = trunkLength;
+				}
+			}
+
 			exports.stage.update();
 		}
 		function animationComplete(shape, leaf, container) {
@@ -197,10 +215,11 @@ var animatedBg = (function() {
 		}
 
 		exports.initDockingTree(100);
-		exports.extendDockingTree(10);
+		exports.extendDockingTree(7);
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[0].x, 0);
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[3].x, 0);
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[6].x, 0);
+		exports.registry.dockingTree.lastNodeWithABranch = 6;
 		var shapes = exports.createRandomShapes(800, 1000, 100, 300, 9);
 		var leaves = exports.registry.dockingTree.leaves;
 		shapes.forEach(function(shape, i) {
