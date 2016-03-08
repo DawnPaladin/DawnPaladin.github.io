@@ -215,13 +215,14 @@ var animatedBg = function () {
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[3].x, 0);
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[6].x, 0);
 		exports.registry.dockingTree.lastNodeWithABranch = 6;
-		var shapes = exports.createRandomShapes(800, 1000, 100, 300, 9);
+		var shapes = exports.createRandomShapes(800, 1000, 100, 300, 18);
 		var leaves = exports.registry.dockingTree.leaves;
-		shapes.forEach(function (shape, i) {
+		leaves.forEach(function (leaf, i) {
 			var leafInfo = leaves[i];
 			var leafObj = leafInfo.object;
 			var container = leafObj.parent;
 			var destination = container.localToGlobal(leafInfo.x, leafInfo.y);
+			var shape = shapes.shift();
 			destination.x = destination.x + xOffsetPerSecond * 1000; // compensate for drift
 			createjs.Tween.get(shape).to(destination, 1000, Ease.quintInOut).call(animationComplete, [shape, leafInfo, container]);
 		});
