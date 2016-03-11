@@ -1,6 +1,6 @@
 "use strict";
 
-document.getElementById('animated-bg').width = window.innerWidth;
+document.getElementById('animated-bg').width = window.innerWidth - 20;
 
 var animatedBg = function () {
 	var exports = {};
