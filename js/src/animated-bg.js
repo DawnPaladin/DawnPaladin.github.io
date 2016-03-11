@@ -15,17 +15,18 @@ var animatedBg = (function() {
 		exports.updateCanvas();
 	};
 	window.addEventListener('resize', exports.updateCanvasWidth);
-	const strokeWeight = 10;
-	const strokeColor = "silver";
-	const fillColor = "white";
-	const radius = 20;
-	const nodeRadius = 10;
-	const treeColor = "silver";
+	const strokeWeight = 7;
+	const strokeColor = "white";
+	const fillColor = "#292929";
+	const radius = 17;
+	const nodeRadius = 7;
+	const treeColor = "#f89c2a";
+	const nodeColor = fillColor;
 	const trunkSegmentWidth = 8;
 	const trunkSegmentLength = 50; // originates at the center of the previous node
 	exports.createRandomShape = function (x, y) {
 		var shape = new createjs.Shape();
-		shape.graphics.setStrokeStyle("8").beginStroke("silver").beginFill("white");
+		shape.graphics.setStrokeStyle(strokeWeight).beginStroke(strokeColor).beginFill(fillColor);
 		var r = Math.random();
 		if (r > 0.6) { // circle
 			shape.graphics.drawCircle(0, 0, radius);
@@ -92,7 +93,7 @@ var animatedBg = (function() {
 			exports.registry.trunkCursor += trunkSegmentLength;
 
 			let trunkNode = new createjs.Shape();
-			trunkNode.graphics.beginFill(treeColor).drawCircle(exports.registry.trunkCursor, 0, nodeRadius);
+			trunkNode.graphics.beginFill(treeColor).drawPolyStar(exports.registry.trunkCursor, 0, nodeRadius, 6, 0);
 			trunk.addChild(trunkNode);
 			var registryEntry = {
 				type: "trunkSegmentDescription",
@@ -121,7 +122,7 @@ var animatedBg = (function() {
 			leaf.graphics.setStrokeStyle(leafStrokeWeight);
 			leaf.graphics.beginStroke(treeColor);
 			leaf
-				.graphics.beginFill("white")
+				.graphics.beginFill(fillColor)
 				.drawCircle(leafCenterX, leafCenterY, leafRadius);
 			branch.addChild(leaf);
 			var leafRegistryEntry = {
@@ -164,7 +165,7 @@ var animatedBg = (function() {
 			let branchNode = new createjs.Shape();
 			branchNode
 				.graphics.beginFill(treeColor)
-				.drawCircle(0, branchCursor, nodeRadius);
+				.drawPolyStar(0, branchCursor, nodeRadius, 6, 0, 90);
 			branch.addChild(branchNode);
 
 			var nodeRegistryEntry = {
@@ -239,32 +240,31 @@ var animatedBg = (function() {
 		var shapes = exports.createRandomShapes(shapeZone.minX, shapeZone.maxX, shapeZone.minY, shapeZone.maxY, 18);
 		var leaves = exports.registry.dockingTree.leaves;
 		createjs.MotionGuidePlugin.install();
-		shapes.forEach(function(shape, i) {
-			const variance = 50;
-			var myPath = exports.circlePath(
-				exports.plusOrMinus(shapeZone.minX, variance),
-				exports.plusOrMinus(shapeZone.minY, variance),
-				exports.plusOrMinus(shapeZone.maxX, variance),
-				exports.plusOrMinus(shapeZone.maxY, variance)
-			);
-			createjs.Tween.get(shape).to({
-				guide: {
-					path: myPath
-				}
-			}, 7000);
-			//graphics.moveTo(0,0).curveTo(0,200,200,200).curveTo(200,0,0,0);
-		});
-		// leaves.forEach(function(leaf, i) {
-		// 	var leafInfo = leaves[i];
-		// 	var leafObj = leafInfo.object;
-		// 	var container = leafObj.parent;
-		// 	var destination = container.localToGlobal(leafInfo.x, leafInfo.y);
-		// 	var shape = shapes.shift();
-		// 	destination.x = destination.x + xOffsetPerSecond * 1000; // compensate for drift
-		// 	createjs.Tween.get(shape)
-		// 		.to(destination, 1000, Ease.quintInOut)
-		// 		.call(animationComplete, [shape, leafInfo, container]);
+		// shapes.forEach(function(shape, i) {
+		// 	const variance = 50;
+		// 	var myPath = exports.circlePath(
+		// 		exports.plusOrMinus(shapeZone.minX, variance),
+		// 		exports.plusOrMinus(shapeZone.minY, variance),
+		// 		exports.plusOrMinus(shapeZone.maxX, variance),
+		// 		exports.plusOrMinus(shapeZone.maxY, variance)
+		// 	);
+		// 	createjs.Tween.get(shape).to({
+		// 		guide: {
+		// 			path: myPath
+		// 		}
+		// 	}, 7000);
 		// });
+		leaves.forEach(function(leaf, i) {
+			var leafInfo = leaves[i];
+			var leafObj = leafInfo.object;
+			var container = leafObj.parent;
+			var destination = container.localToGlobal(leafInfo.x, leafInfo.y);
+			var shape = shapes.shift();
+			destination.x = destination.x + xOffsetPerSecond * 1000; // compensate for drift
+			createjs.Tween.get(shape)
+				.to(destination, 1000, Ease.quintInOut)
+				.call(animationComplete, [shape, leafInfo, container]);
+		});
 		createjs.Ticker.addEventListener("tick", tick);
 		createjs.Ticker.setFPS(60);
 

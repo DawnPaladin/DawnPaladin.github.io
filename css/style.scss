@@ -1,4 +1,11 @@
-body { margin: 0; }
+$crimson : #821517;
+$orange: #f89c2a;
+$yellow: #f7f399;
+
+body {
+	margin: 0;
+	background-color: hsl(0, 0%, 16%);
+}
 a {
 	color: #821517;
 }
