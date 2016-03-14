@@ -6,7 +6,6 @@ $mobile-width: 990px;
 	flex-direction: column;
 	background-color: gainsboro;
 	padding: 1em $page-margin-width;
-	margin-bottom: 1em;
 	.item-group {
 		display: flex;
 		.half-column {
@@ -21,19 +20,17 @@ $mobile-width: 990px;
 }
 
 section.portfolio {
-	padding: 1em $page-margin-width;
+	padding: 0 $page-margin-width;
 	max-width: 1000px;
 	margin: auto;
 	display: flex;
 	flex-direction: row;
 	.spine {
 		width: 50px;
-		background-color: white;
 		min-height: 500px;
 	}
 	.column {
 		flex-grow: 5;
-		// background-color: lavender;
 		min-height: 500px;
 		display: flex;
 		flex-direction: column;
