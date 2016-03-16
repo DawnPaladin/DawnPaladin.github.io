@@ -6,6 +6,10 @@ $mobile-width: 990px;
 	flex-direction: column;
 	background-color: gainsboro;
 	padding: 1em $page-margin-width;
+	clear: both;
+	h1 {
+		text-align: center;
+	}
 	.item-group {
 		display: flex;
 		.half-column {
