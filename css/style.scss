@@ -28,8 +28,10 @@ h2 {
 	height: 400px;
 	// width: 100%;
 }
-.intro {
+section.intro {
 	color: white;
+	max-width: 850px;
+	margin: auto;
 }
 .logo {
 	float: left;
