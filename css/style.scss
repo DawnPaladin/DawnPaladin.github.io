@@ -1,7 +1,7 @@
 $crimson : #821517;
 $orange: #f89c2a;
 $yellow: #f7f399;
-$mobile-width: 990px;
+$mobile-width: 900px;
 
 body {
 	margin: 0;
@@ -45,7 +45,7 @@ h2 {
 	}
 }
 .portfolio .block {
-	width: 400px;
+	max-width: 400px;
 	margin: 20px auto;
 	display: block;
 	border: 2px solid $orange;
@@ -54,6 +54,7 @@ h2 {
 }
 .portfolio .block img {
 	max-width: 100%;
+	display: block;
 }
 .block.text {
 	background-color: white;

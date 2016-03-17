@@ -1,5 +1,5 @@
 $page-margin-width: 10%;
-$mobile-width: 990px;
+$mobile-width: 900px;
 
 .stripe {
 	display: flex;
@@ -24,7 +24,6 @@ $mobile-width: 990px;
 }
 
 section.portfolio {
-	padding: 0 $page-margin-width;
 	max-width: 1000px;
 	margin: auto;
 	display: flex;
