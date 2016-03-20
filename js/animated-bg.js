@@ -80,7 +80,8 @@ var animatedBg = function () {
 				object: trunk,
 				nodes: []
 			},
-			paused: false
+			paused: false,
+			xCorrection: 0
 		};
 		exports.registry.dockingTree.branches = [];
 		exports.registry.dockingTree.leaves = [];
@@ -190,7 +191,7 @@ var animatedBg = function () {
 		createjs.MotionGuidePlugin.install();
 
 		const Ease = createjs.Ease;
-		const xOffsetPerSecond = -0.025;
+		var xOffsetPerSecond = -0.025;
 		const treeExtensionInterval = 2000;
 		const intervalBetweenBranches = 3;
 		var timeOfLastTreeExtension = 0;
@@ -201,11 +202,9 @@ var animatedBg = function () {
 				// if myPath isn't being passed in from a previous call
 				var myPath = exports.circlePath(exports.plusOrMinus(shapeZone.minX, variance), exports.plusOrMinus(shapeZone.minY, variance), exports.plusOrMinus(shapeZone.maxX, variance), exports.plusOrMinus(shapeZone.maxY, variance));
 			}
-			//console.log("Setting shape", shape, "on path", myPath );
 			createjs.Tween.get(shape).to({
 				guide: { path: myPath }
 			}, 7000).call(moveInCircle, [shape, i, myPath]);
-			window.setTimeout(function () {}, 1000);
 		}
 		function attractShape(leafInfo) {
 			var leafObj = leafInfo.object;
@@ -220,7 +219,7 @@ var animatedBg = function () {
 			var trunkLength = exports.registry.dockingTree.trunk.nodes.length;
 			if (!exports.registry.dockingTree.paused) {
 				// drift tree to the left
-				var xOffset = timeElapsed * xOffsetPerSecond;
+				var xOffset = timeElapsed * xOffsetPerSecond + exports.registry.dockingTree.xCorrection;
 				exports.registry.dockingTree.object.x = xOffset;
 
 				// extend tree periodically
@@ -239,6 +238,18 @@ var animatedBg = function () {
 						newShapes.forEach(moveInCircle);
 						exports.shapes = exports.shapes.concat(newShapes);
 					}
+					// auto-throttle rate of drift
+					var nodes = exports.registry.dockingTree.trunk.nodes;
+					var lastNode = nodes[nodes.length - 1];
+					var treeTip = exports.registry.dockingTree.object.localToGlobal(lastNode.x, lastNode.y);
+					console.log("Tree tip:", treeTip.x);
+					if (treeTip.x < 350) {
+						exports.registry.dockingTree.xCorrection += 0.5;
+						console.log("Docking tree x-correction raised to", exports.registry.dockingTree.xCorrection);
+					} else if (treeTip.x > 355) {
+						exports.registry.dockingTree.xCorrection -= 1;
+						console.log("Docking tree x-correction lowered to", exports.registry.dockingTree.xCorrection);
+					}
 				}
 			}
 			exports.stage.update();
@@ -249,7 +260,7 @@ var animatedBg = function () {
 			container.addChild(shape);
 		}
 
-		exports.initDockingTree(100);
+		exports.initDockingTree(150);
 		exports.extendDockingTree(7);
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[0].x, 0);
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[3].x, 0);
@@ -271,7 +282,7 @@ var animatedBg = function () {
 		}
 		exports.registry.dockingTree.leaves;
 		createjs.Ticker.addEventListener("tick", tick);
-		createjs.Ticker.setFPS(60);
+		createjs.Ticker.setFPS(30);
 	}();
 	return exports;
 }();
