@@ -192,6 +192,23 @@ var animatedBg = function () {
 		const treeExtensionInterval = 2000;
 		const intervalBetweenBranches = 3;
 		var timeOfLastTreeExtension = 0;
+		function moveInCircle(shape, i) {
+			const variance = 50;
+			var myPath = exports.circlePath(exports.plusOrMinus(shapeZone.minX, variance), exports.plusOrMinus(shapeZone.minY, variance), exports.plusOrMinus(shapeZone.maxX, variance), exports.plusOrMinus(shapeZone.maxY, variance));
+			createjs.Tween.get(shape).to({
+				guide: {
+					path: myPath
+				}
+			}, 7000);
+		}
+		function attractShape(leafInfo) {
+			var leafObj = leafInfo.object;
+			var container = leafObj.parent;
+			var destination = container.localToGlobal(leafInfo.x, leafInfo.y);
+			var shape = exports.shapes.shift();
+			destination.x = destination.x + xOffsetPerSecond * 1000; // compensate for drift
+			createjs.Tween.get(shape).to(destination, 1000, Ease.quintInOut).call(animationComplete, [shape, leafInfo, container]);
+		}
 		function tick(event) {
 			var timeElapsed = createjs.Ticker.getTime();
 			var trunkLength = exports.registry.dockingTree.trunk.nodes.length;
@@ -208,7 +225,12 @@ var animatedBg = function () {
 					if (trunkLength - intervalBetweenBranches >= exports.registry.dockingTree.lastNodeWithABranch) {
 						exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[trunkLength].x, 0);
 						exports.registry.dockingTree.lastNodeWithABranch = trunkLength;
+						while (exports.registry.dockingTree.leaves.length > 0) {
+							let leaf = exports.registry.dockingTree.leaves.pop();
+							attractShape(leaf);
+						}
 						let newShapes = exports.createRandomShapes(shapeZone.minX, shapeZone.maxX, shapeZone.minY, shapeZone.maxY, 3);
+						newShapes.forEach(moveInCircle);
 						exports.shapes = exports.shapes.concat(newShapes);
 					}
 				}
@@ -234,30 +256,14 @@ var animatedBg = function () {
 			maxY: 300
 		};
 		exports.shapes = exports.createRandomShapes(shapeZone.minX, shapeZone.maxX, shapeZone.minY, shapeZone.maxY, 18);
-		var leaves = exports.registry.dockingTree.leaves;
 		createjs.MotionGuidePlugin.install();
 
-		// move shapes to leaves
-		leaves.forEach(function (leaf, i) {
-			var leafInfo = leaves[i];
-			var leafObj = leafInfo.object;
-			var container = leafObj.parent;
-			var destination = container.localToGlobal(leafInfo.x, leafInfo.y);
-			var shape = exports.shapes.shift();
-			destination.x = destination.x + xOffsetPerSecond * 1000; // compensate for drift
-			createjs.Tween.get(shape).to(destination, 1000, Ease.quintInOut).call(animationComplete, [shape, leafInfo, container]);
-		});
-
-		// move shapes in a circle
-		exports.shapes.forEach(function (shape, i) {
-			const variance = 50;
-			var myPath = exports.circlePath(exports.plusOrMinus(shapeZone.minX, variance), exports.plusOrMinus(shapeZone.minY, variance), exports.plusOrMinus(shapeZone.maxX, variance), exports.plusOrMinus(shapeZone.maxY, variance));
-			createjs.Tween.get(shape).to({
-				guide: {
-					path: myPath
-				}
-			}, 7000);
-		});
+		//exports.shapes.forEach(moveInCircle);
+		while (exports.registry.dockingTree.leaves.length > 0) {
+			let leaf = exports.registry.dockingTree.leaves.pop();
+			attractShape(leaf);
+		}
+		exports.registry.dockingTree.leaves;
 		createjs.Ticker.addEventListener("tick", tick);
 		createjs.Ticker.setFPS(60);
 	}();
