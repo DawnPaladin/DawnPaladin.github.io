@@ -187,19 +187,25 @@ var animatedBg = function () {
 		return base + variance * randomSign;
 	};
 	exports.animTest = function () {
+		createjs.MotionGuidePlugin.install();
+
 		const Ease = createjs.Ease;
 		const xOffsetPerSecond = -0.025;
 		const treeExtensionInterval = 2000;
 		const intervalBetweenBranches = 3;
 		var timeOfLastTreeExtension = 0;
-		function moveInCircle(shape, i) {
+
+		function moveInCircle(shape, i, myPath) {
 			const variance = 50;
-			var myPath = exports.circlePath(exports.plusOrMinus(shapeZone.minX, variance), exports.plusOrMinus(shapeZone.minY, variance), exports.plusOrMinus(shapeZone.maxX, variance), exports.plusOrMinus(shapeZone.maxY, variance));
+			if (!myPath || myPath.length !== 18) {
+				// if myPath isn't being passed in from a previous call
+				var myPath = exports.circlePath(exports.plusOrMinus(shapeZone.minX, variance), exports.plusOrMinus(shapeZone.minY, variance), exports.plusOrMinus(shapeZone.maxX, variance), exports.plusOrMinus(shapeZone.maxY, variance));
+			}
+			//console.log("Setting shape", shape, "on path", myPath );
 			createjs.Tween.get(shape).to({
-				guide: {
-					path: myPath
-				}
-			}, 7000);
+				guide: { path: myPath }
+			}, 7000).call(moveInCircle, [shape, i, myPath]);
+			window.setTimeout(function () {}, 1000);
 		}
 		function attractShape(leafInfo) {
 			var leafObj = leafInfo.object;
@@ -207,7 +213,7 @@ var animatedBg = function () {
 			var destination = container.localToGlobal(leafInfo.x, leafInfo.y);
 			var shape = exports.shapes.shift();
 			destination.x = destination.x + xOffsetPerSecond * 1000; // compensate for drift
-			createjs.Tween.get(shape).to(destination, 1000, Ease.quintInOut).call(animationComplete, [shape, leafInfo, container]);
+			createjs.Tween.get(shape, { override: true }).to(destination, 1000, Ease.quintInOut).call(animationComplete, [shape, leafInfo, container]);
 		}
 		function tick(event) {
 			var timeElapsed = createjs.Ticker.getTime();
@@ -256,9 +262,9 @@ var animatedBg = function () {
 			maxY: 300
 		};
 		exports.shapes = exports.createRandomShapes(shapeZone.minX, shapeZone.maxX, shapeZone.minY, shapeZone.maxY, 18);
-		createjs.MotionGuidePlugin.install();
-
-		//exports.shapes.forEach(moveInCircle);
+		window.setTimeout(function () {
+			exports.shapes.forEach(moveInCircle);
+		}, 1000);
 		while (exports.registry.dockingTree.leaves.length > 0) {
 			let leaf = exports.registry.dockingTree.leaves.pop();
 			attractShape(leaf);
