@@ -140,3 +140,22 @@ section.intro {
 	font-size: 22px;
 	padding: 1em 20%;
 }
+section.contact {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	flex-wrap: wrap;
+	font-family: "Exo", sans-serif;
+	font-weight: 700;
+}
+.contact-point {
+	margin: .5em;
+}
+.contact-point a {
+	text-decoration: none;
+}
+.contact-point img {
+	height: 2em;
+	display: inline;
+	vertical-align: middle;
+}
