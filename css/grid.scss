@@ -4,7 +4,8 @@ $mobile-width: 900px;
 .stripe {
 	display: flex;
 	flex-direction: column;
-	background-color: gainsboro;
+	background-color: hsl(0, 0%, 10%);
+	color: white;
 	padding: 1em $page-margin-width;
 	clear: both;
 	h1 {

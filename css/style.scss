@@ -20,6 +20,7 @@ h1 {
 h2 {
 	font-family: "Exo", sans-serif;
 	font-size: 22px;
+	font-weight: 600;
 }
 .intro {
 	position: relative;
@@ -47,6 +48,7 @@ section.intro {
 	float: left;
 	margin: 0.25em;
 	max-height: 80px;
+	max-width: 150px;
 }
 .mission-statement {
 	position: absolute;
@@ -146,16 +148,17 @@ section.contact {
 	justify-content: center;
 	flex-wrap: wrap;
 	font-family: "Exo", sans-serif;
-	font-weight: 700;
+	font-weight: 500;
 }
 .contact-point {
 	margin: .5em;
 }
 .contact-point a {
+	color: $orange;
 	text-decoration: none;
 }
 .contact-point img {
-	height: 2em;
+	height: 2.25em;
 	display: inline;
-	vertical-align: middle;
+	vertical-align: -60%;
 }
