@@ -4,7 +4,8 @@ $mobile-width: 900px;
 .stripe {
 	display: flex;
 	flex-direction: column;
-	background-color: hsl(0, 0%, 10%);
+	background-image: url("http://www.transparenttextures.com/patterns/inflicted.png");
+	background-color: hsl(0, 0%, 16%);
 	color: white;
 	padding: 1em $page-margin-width;
 	clear: both;
