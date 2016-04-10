@@ -47,7 +47,7 @@ h2 {
 section.intro {
 	color: white;
 	min-height: 400px;
-	background-color: hsla(0,0%,0%, .25);
+	background-color: hsl(343, 100%, 6%);
 	border-bottom: 2px solid $orange;
 }
 .logo {
@@ -205,8 +205,7 @@ section.contact {
 .stripe {
 	display: flex;
 	flex-direction: column;
-	background-image: url("http://www.transparenttextures.com/patterns/inflicted.png");
-	background-color: hsl(0, 0%, 16%);
+	background-color: hsla(0,0%,0%, .5);
 	color: white;
 	padding: 1em $page-margin-width;
 	clear: both;

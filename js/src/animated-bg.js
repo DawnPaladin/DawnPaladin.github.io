@@ -17,7 +17,7 @@ var animatedBg = (function() {
 	window.addEventListener('resize', exports.updateCanvasWidth);
 	const strokeWeight = 7;
 	const strokeColor = "white";
-	const fillColor = "#292929";
+	const fillColor = "#1f0009";
 	const radius = 17;
 	const nodeRadius = 7;
 	const treeColor = "#f89c2a";
@@ -193,7 +193,7 @@ var animatedBg = (function() {
 		var randomSign = (0.5 - Math.random()) * 2; // between -1 and 1
 		return base + (variance * randomSign);
 	};
-	exports.animTest = (function() {
+	exports.run = (function() {
 		createjs.MotionGuidePlugin.install();
 
 		const Ease = createjs.Ease;
@@ -205,7 +205,7 @@ var animatedBg = (function() {
 		function moveInCircle(shape, i, myPath) {
 			const variance = 50;
 			if (!myPath || myPath.length !== 18) { // if myPath isn't being passed in from a previous call
-				var myPath = exports.circlePath(
+				var myPath = exports.circlePath( // eslint-disable-line
 					exports.plusOrMinus(shapeZone.minX, variance),
 					exports.plusOrMinus(shapeZone.minY, variance),
 					exports.plusOrMinus(shapeZone.maxX, variance),
@@ -216,7 +216,7 @@ var animatedBg = (function() {
 				.get(shape)
 				.to({
 					guide: { path: myPath }
-					}, 7000)
+					}, 7000) // eslint-disable-line
 				.call(moveInCircle, [shape, i, myPath]);
 		}
 		function attractShape(leafInfo) {
@@ -257,16 +257,26 @@ var animatedBg = (function() {
 					var nodes = exports.registry.dockingTree.trunk.nodes;
 					var lastNode = nodes[nodes.length - 1];
 					var treeTip = exports.registry.dockingTree.object.localToGlobal(lastNode.x, lastNode.y);
-					console.log("Tree tip:", treeTip.x);
+					//console.log("Tree tip:", treeTip.x);
 					if (treeTip.x < 350) {
 						exports.registry.dockingTree.xCorrection += 0.5;
-						console.log("Docking tree x-correction raised to", exports.registry.dockingTree.xCorrection);
+						//console.log("Docking tree x-correction raised to", exports.registry.dockingTree.xCorrection);
 					} else if (treeTip.x > 355) {
 						exports.registry.dockingTree.xCorrection -= 1;
-						console.log("Docking tree x-correction lowered to", exports.registry.dockingTree.xCorrection);
+						//console.log("Docking tree x-correction lowered to", exports.registry.dockingTree.xCorrection);
 					}
 				}
-			}
+			} // end if paused
+			window.onfocus = function() {
+				var treeRoot = exports.registry.dockingTree.object.x;
+				var trunkPixelLength = trunkLength * trunkSegmentLength;
+				const trunkTarget = 350;
+				var drift = trunkTarget - trunkPixelLength - treeRoot;
+				if (drift > 250) {
+					console.log("Drift correction: ", trunkTarget, trunkPixelLength, treeRoot, drift);
+					exports.registry.dockingTree.xCorrection += drift;
+				}
+			};
 			exports.stage.update();
 		}
 		function animationComplete(shape, leaf, container) {
@@ -295,7 +305,7 @@ var animatedBg = (function() {
 			let leaf = exports.registry.dockingTree.leaves.pop();
 			attractShape(leaf);
 		}
-		exports.registry.dockingTree.leaves
+		exports.registry.dockingTree.leaves;
 		createjs.Ticker.addEventListener("tick", tick);
 		createjs.Ticker.setFPS(30);
 
