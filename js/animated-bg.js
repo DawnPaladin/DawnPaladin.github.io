@@ -40,6 +40,7 @@ var animatedBg = function () {
 		}
 		shape.x = x;
 		shape.y = y;
+		shape.alpha = 0;
 		exports.stage.addChild(shape);
 		exports.stage.update();
 		return shape;
@@ -203,6 +204,7 @@ var animatedBg = function () {
 				var myPath = exports.circlePath( // eslint-disable-line
 				exports.plusOrMinus(shapeZone.minX, variance), exports.plusOrMinus(shapeZone.minY, variance), exports.plusOrMinus(shapeZone.maxX, variance), exports.plusOrMinus(shapeZone.maxY, variance));
 			}
+			createjs.Tween.get(shape).to({ alpha: 1 }, 500);
 			createjs.Tween.get(shape).to({
 				guide: { path: myPath }
 			}, 7000) // eslint-disable-line
@@ -215,6 +217,7 @@ var animatedBg = function () {
 			var shape = exports.shapes.shift();
 			destination.x = destination.x + xOffsetPerSecond * 1000; // compensate for drift
 			createjs.Tween.get(shape, { override: true }).to(destination, 1000, Ease.quintInOut).call(animationComplete, [shape, leafInfo, container]);
+			createjs.Tween.get(shape).to({ alpha: 1 }, 500);
 		}
 		function tick(event) {
 			var timeElapsed = createjs.Ticker.getTime();

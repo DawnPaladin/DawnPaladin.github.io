@@ -37,6 +37,7 @@ var animatedBg = (function() {
 		}
 		shape.x = x;
 		shape.y = y;
+		shape.alpha = 0;
 		exports.stage.addChild(shape);
 		exports.stage.update();
 		return shape;
@@ -212,6 +213,7 @@ var animatedBg = (function() {
 					exports.plusOrMinus(shapeZone.maxY, variance)
 				);
 			}
+			createjs.Tween.get(shape).to({ alpha: 1 }, 500);
 			createjs.Tween
 				.get(shape)
 				.to({
@@ -228,6 +230,7 @@ var animatedBg = (function() {
 			createjs.Tween.get(shape, {override: true})
 				.to(destination, 1000, Ease.quintInOut)
 				.call(animationComplete, [shape, leafInfo, container]);
+			createjs.Tween.get(shape).to({ alpha: 1 }, 500);
 		}
 		function tick(event) {
 			var timeElapsed = createjs.Ticker.getTime();
