@@ -113,7 +113,8 @@ var animatedBg = function () {
 			const stemWidth = 2;
 			const stemLength = trunkSegmentLength;
 			var leafStem = new createjs.Shape();
-			leafStem.graphics.beginFill(treeColor).drawRect(xOrigin, yOrigin - stemWidth / 2, stemLength, stemWidth);
+			leafStem.graphics.beginFill(treeColor).drawRect(xOrigin, 0, stemLength, stemWidth);
+			createjs.Tween.get(leafStem).to({ y: yOrigin - stemWidth / 2 }, 1000, createjs.Ease.quintInOut);
 			branch.addChild(leafStem);
 			const leafRadius = nodeRadius;
 			const leafStrokeWeight = 2;
@@ -122,7 +123,8 @@ var animatedBg = function () {
 			var leafCenterY = yOrigin;
 			leaf.graphics.setStrokeStyle(leafStrokeWeight);
 			leaf.graphics.beginStroke(treeColor);
-			leaf.graphics.beginFill(fillColor).drawCircle(leafCenterX, leafCenterY, leafRadius);
+			leaf.graphics.beginFill(fillColor).drawCircle(leafCenterX, 0, leafRadius);
+			createjs.Tween.get(leaf).to({ y: leafCenterY }, 1000, createjs.Ease.quintInOut);
 			branch.addChild(leaf);
 			var leafRegistryEntry = {
 				type: "leafDescription",
@@ -154,14 +156,16 @@ var animatedBg = function () {
 		for (let i = 0; i < branchLength; i++) {
 			// create the segments
 			let branchSegment = new createjs.Shape();
-			branchSegment.graphics.beginFill(treeColor).drawRect(branchSegmentWidth * -0.5, branchCursor, branchSegmentWidth, branchSegmentLength);
+			branchSegment.graphics.beginFill(treeColor).drawRect(branchSegmentWidth * -0.5, 0, branchSegmentWidth, branchSegmentWidth);
+			createjs.Tween.get(branchSegment).to({ y: branchCursor, scaleY: branchSegmentLength / branchSegmentWidth }, 1000, createjs.Ease.quintInOut);
 			branch.addChild(branchSegment);
 			branchCursor += branchSegmentLength;
 		}
 		branchCursor = branchSegmentLength; // go back and create the nodes and documentation
 		for (let i = 0; i < branchLength; i++) {
 			let branchNode = new createjs.Shape();
-			branchNode.graphics.beginFill(treeColor).drawPolyStar(0, branchCursor, nodeRadius, 6, 0, 90);
+			branchNode.graphics.beginFill(treeColor).drawPolyStar(0, 0, nodeRadius, 6, 0, 90);
+			createjs.Tween.get(branchNode).to({ y: branchCursor }, 1000, createjs.Ease.quintInOut);
 			branch.addChild(branchNode);
 
 			var nodeRegistryEntry = {
@@ -260,9 +264,9 @@ var animatedBg = function () {
 			window.onfocus = function () {
 				var treeRoot = exports.registry.dockingTree.object.x;
 				var trunkPixelLength = trunkLength * trunkSegmentLength;
-				const trunkTarget = 350;
+				const trunkTarget = 300;
 				var drift = trunkTarget - trunkPixelLength - treeRoot;
-				if (drift > 250) {
+				if (drift > 100) {
 					console.log("Drift correction: ", trunkTarget, trunkPixelLength, treeRoot, drift);
 					exports.registry.dockingTree.xCorrection += drift;
 				}
