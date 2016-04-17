@@ -87,7 +87,10 @@ var animatedBg = function () {
 		exports.registry.dockingTree.branches = [];
 		exports.registry.dockingTree.leaves = [];
 	};
-	exports.extendDockingTree = function (treeLength) {
+	exports.extendDockingTree = function (treeLength, callback) {
+		if (!callback) {
+			callback = function () {};
+		}
 		for (let i = 0; i < treeLength; i++) {
 			var trunk = exports.registry.dockingTree.trunk.object;
 			let trunkSegment = new createjs.Shape();
@@ -98,7 +101,7 @@ var animatedBg = function () {
 			trunkNode.graphics.beginFill(treeColor).drawPolyStar(0, 0, nodeRadius, 6, 0).moveTo(exports.registry.trunkCursor + trunkSegmentLength);
 			trunk.addChild(trunkNode);
 			createjs.Tween.get(trunkSegment).to({ x: exports.registry.trunkCursor }, 1000, createjs.Ease.quintInOut);
-			createjs.Tween.get(trunkNode).to({ x: exports.registry.trunkCursor + trunkSegmentLength }, 1000, createjs.Ease.quintInOut);
+			createjs.Tween.get(trunkNode).to({ x: exports.registry.trunkCursor + trunkSegmentLength }, 1000, createjs.Ease.quintInOut).call(callback);
 			var registryEntry = {
 				type: "trunkSegmentDescription",
 				x: exports.registry.trunkCursor + trunkSegmentLength,
@@ -236,25 +239,20 @@ var animatedBg = function () {
 				// extend tree periodically
 				var timeSinceLastTreeExtension = timeElapsed - timeOfLastTreeExtension;
 				if (timeSinceLastTreeExtension > treeExtensionInterval) {
-					exports.extendDockingTree(1);
-					timeOfLastTreeExtension = timeElapsed;
-					if (trunkLength - intervalBetweenBranches >= exports.registry.dockingTree.lastNodeWithABranch) {
-						window.setTimeout(function () {
+					exports.extendDockingTree(1, function () {
+						if (trunkLength - intervalBetweenBranches >= exports.registry.dockingTree.lastNodeWithABranch) {
 							exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[trunkLength].x, 0);
-						}, 750);
-						window.setTimeout(function () {
+							exports.registry.dockingTree.lastNodeWithABranch = trunkLength;
 							while (exports.registry.dockingTree.leaves.length > 0) {
 								let leaf = exports.registry.dockingTree.leaves.pop();
 								attractShape(leaf);
 							}
-							exports.registry.dockingTree.lastNodeWithABranch = trunkLength;
-						}, 1500);
-						window.setTimeout(function () {
 							let newShapes = exports.createRandomShapes(shapeZone.minX, shapeZone.maxX, shapeZone.minY, shapeZone.maxY, 3);
 							newShapes.forEach(moveInCircle);
 							exports.shapes = exports.shapes.concat(newShapes);
-						}, 2250);
-					}
+						}
+					});
+					timeOfLastTreeExtension = timeElapsed;
 					// auto-throttle rate of drift
 					var nodes = exports.registry.dockingTree.trunk.nodes;
 					var lastNode = nodes[nodes.length - 1];
