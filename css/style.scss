@@ -3,9 +3,8 @@ $heart: hsl(351, 96%, 11%);
 $orange: #f89c2a;
 $yellow: #f7f399;
 $slate: hsl(0, 0%, 16%);
-$mobile-width: 900px;
+$mobile-width: 1024px;
 $page-margin-width: 10%;
-$mobile-width: 900px;
 
 body {
 	margin: 0;
@@ -141,7 +140,7 @@ section.portfolio {
 	display: block;
 	height: 50px;
 }
-@media (min-width: $mobile-width) {
+@media (min-width: $mobile-width + 1) {
 	.spine {
 		background-image: url('/img/spine.png');
 		background-position: center 0px;
