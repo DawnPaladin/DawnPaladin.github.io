@@ -91,20 +91,22 @@ var animatedBg = function () {
 		for (let i = 0; i < treeLength; i++) {
 			var trunk = exports.registry.dockingTree.trunk.object;
 			let trunkSegment = new createjs.Shape();
-			trunkSegment.graphics.beginFill(treeColor).drawRect(exports.registry.trunkCursor, -0.5 * trunkSegmentWidth, trunkSegmentLength, trunkSegmentWidth);
+			trunkSegment.graphics.beginFill(treeColor).drawRect(0, -0.5 * trunkSegmentWidth, trunkSegmentLength, trunkSegmentWidth).moveTo(exports.registry.trunkCursor);
 			trunk.addChild(trunkSegment);
-			exports.registry.trunkCursor += trunkSegmentLength;
 
 			let trunkNode = new createjs.Shape();
-			trunkNode.graphics.beginFill(treeColor).drawPolyStar(exports.registry.trunkCursor, 0, nodeRadius, 6, 0);
+			trunkNode.graphics.beginFill(treeColor).drawPolyStar(0, 0, nodeRadius, 6, 0).moveTo(exports.registry.trunkCursor + trunkSegmentLength);
 			trunk.addChild(trunkNode);
+			createjs.Tween.get(trunkSegment).to({ x: exports.registry.trunkCursor }, 1000, createjs.Ease.quintInOut);
+			createjs.Tween.get(trunkNode).to({ x: exports.registry.trunkCursor + trunkSegmentLength }, 1000, createjs.Ease.quintInOut);
 			var registryEntry = {
 				type: "trunkSegmentDescription",
-				x: exports.registry.trunkCursor,
+				x: exports.registry.trunkCursor + trunkSegmentLength,
 				y: 0,
 				object: trunkNode
 			};
 			exports.registry.dockingTree.trunk.nodes.push(registryEntry);
+			exports.registry.trunkCursor += trunkSegmentLength;
 		}
 		exports.stage.update();
 	};
@@ -237,15 +239,21 @@ var animatedBg = function () {
 					exports.extendDockingTree(1);
 					timeOfLastTreeExtension = timeElapsed;
 					if (trunkLength - intervalBetweenBranches >= exports.registry.dockingTree.lastNodeWithABranch) {
-						exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[trunkLength].x, 0);
-						exports.registry.dockingTree.lastNodeWithABranch = trunkLength;
-						while (exports.registry.dockingTree.leaves.length > 0) {
-							let leaf = exports.registry.dockingTree.leaves.pop();
-							attractShape(leaf);
-						}
-						let newShapes = exports.createRandomShapes(shapeZone.minX, shapeZone.maxX, shapeZone.minY, shapeZone.maxY, 3);
-						newShapes.forEach(moveInCircle);
-						exports.shapes = exports.shapes.concat(newShapes);
+						window.setTimeout(function () {
+							exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[trunkLength].x, 0);
+						}, 750);
+						window.setTimeout(function () {
+							while (exports.registry.dockingTree.leaves.length > 0) {
+								let leaf = exports.registry.dockingTree.leaves.pop();
+								attractShape(leaf);
+							}
+							exports.registry.dockingTree.lastNodeWithABranch = trunkLength;
+						}, 1500);
+						window.setTimeout(function () {
+							let newShapes = exports.createRandomShapes(shapeZone.minX, shapeZone.maxX, shapeZone.minY, shapeZone.maxY, 3);
+							newShapes.forEach(moveInCircle);
+							exports.shapes = exports.shapes.concat(newShapes);
+						}, 2250);
 					}
 					// auto-throttle rate of drift
 					var nodes = exports.registry.dockingTree.trunk.nodes;

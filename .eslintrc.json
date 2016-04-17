@@ -9,10 +9,6 @@
             2,
             "tab"
         ],
-        "linebreak-style": [
-            2,
-            "windows"
-        ],
         "semi": [
             1,
             "always"
