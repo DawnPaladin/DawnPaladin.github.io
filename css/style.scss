@@ -116,6 +116,8 @@ section.portfolio {
 	margin: 20px auto;
 	display: block;
 	border: 2px solid $orange;
+	box-shadow: 0 0 0 white;
+	transition: border-color .25s, box-shadow .25s;
 	box-sizing: border-box;
 	z-index: 10;
 }
@@ -123,8 +125,13 @@ section.portfolio {
 	max-width: 100%;
 	display: block;
 }
+a.block:hover {
+	border-color: white;
+	box-shadow: 0 0 5px white;
+}
 .block.text {
 	background-color: white;
+	border-color: white;
 	padding: 0 1em;
 }
 .block .image {
