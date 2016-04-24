@@ -25,6 +25,9 @@ h2 {
 	font-size: 22px;
 	font-weight: 600;
 }
+h1, h2, h3 {
+	margin: 0 auto;
+}
 
 section.intro {
 	position: relative;
@@ -169,7 +172,7 @@ section.portfolio {
 	.third.attach-point {
 		background-image: url('/img/spine-left.png');
 		background-position: right;
-		top: 700px;
+		top: 800px;
 		right: 0px;
 	}
 }
