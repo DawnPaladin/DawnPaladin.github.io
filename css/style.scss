@@ -111,6 +111,10 @@ section.portfolio {
 		flex-direction: column;
 	}
 }
+.column {
+	position: relative;
+	z-index: 0;
+}
 .portfolio .block {
 	max-width: 400px;
 	margin: 20px auto;
@@ -130,9 +134,31 @@ a.block:hover {
 	box-shadow: 0 0 5px white;
 }
 .block.text {
+	position: relative;
 	background-color: white;
 	border-color: white;
 	padding: 0 1em;
+	max-width: 320px;
+}
+.block.text::before {
+	content: "";
+	display: block;
+	position: absolute;
+	background: url(../img/top-bracket.svg) no-repeat;
+	width: 128%;
+	height: 28px;
+	top: -7px;
+	left: -14%;
+}
+.block.text::after {
+	content: "";
+	display: block;
+	position: absolute;
+	background: url(../img/bottom-bracket.svg) no-repeat;
+	width: 128%;
+	height: 28px;
+	bottom: -7px;
+	left: -14%;
 }
 .block .image {
 	max-width: 100%;
@@ -162,7 +188,7 @@ a.block:hover {
 		position: absolute;
 		width: 100px;
 		height: 50px;
-		z-index: 5;
+		z-index: -1;
 	}
 	.first.attach-point {
 		background-image: url('/img/spine-left.png');
