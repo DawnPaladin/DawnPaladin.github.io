@@ -16,6 +16,7 @@ a {
 }
 p {
 	font-family: "Exo", sans-serif;
+	font-weight: 500;
 }
 h1 {
 	font-family: "Exo", sans-serif;
@@ -28,6 +29,9 @@ h2 {
 }
 h1, h2, h3 {
 	margin: 0 auto;
+}
+code {
+	font-size: 1.25em;
 }
 
 section.intro {
