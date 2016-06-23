@@ -154,6 +154,7 @@ a.block:hover {
 	width: 120%;
 	height: 34px;
 	left: -10%;
+	z-index: -1;
 }
 .block.text::before {
 	background: url(../img/top-bracket.svg) no-repeat;
