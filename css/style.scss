@@ -210,6 +210,18 @@ a.block:hover {
 		top: 900px;
 		right: 12%;
 	}
+	.fourth.attach-point {
+		background-image: url('/img/spine-right.png');
+		background-position: left;
+		top: 1300px;
+		left: 13%;
+	}
+	.fifth.attach-point {
+		background-image: url('/img/spine-left.png');
+		background-position: right;
+		top: 1400px;
+		right: 12%;
+	}
 }
 .stripe.hidden {
 	display: none;
