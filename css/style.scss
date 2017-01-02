@@ -177,6 +177,16 @@ a.block:hover {
 	display: block;
 	height: 50px;
 }
+@mixin left-attach-point {
+  background-image: url('/img/spine-left.png');
+  background-position: right;
+  right: 12%;
+}
+@mixin right-attach-point {
+  background-image: url('/img/spine-right.png');
+  background-position: left;
+  left: 13%;
+}
 @media (min-width: $mobile-width + 1) {
 	.spine {
 		background-image: url('/img/spine.png');
@@ -193,34 +203,24 @@ a.block:hover {
 		z-index: -1;
 	}
 	.first.attach-point {
-		background-image: url('/img/spine-left.png');
-		background-position: right;
+    @include left-attach-point;
 		top: 100px;
-		right: 12%;
 	}
 	.second.attach-point {
-		background-image: url('/img/spine-right.png');
-		background-position: left;
+    @include right-attach-point;
 		top: 300px;
-		left: 13%;
 	}
 	.third.attach-point {
-		background-image: url('/img/spine-left.png');
-		background-position: right;
+    @include left-attach-point;
 		top: 900px;
-		right: 12%;
 	}
 	.fourth.attach-point {
-		background-image: url('/img/spine-right.png');
-		background-position: left;
+    @include right-attach-point;
 		top: 1300px;
-		left: 13%;
 	}
 	.fifth.attach-point {
-		background-image: url('/img/spine-left.png');
-		background-position: right;
+    @include left-attach-point;
 		top: 1400px;
-		right: 12%;
 	}
 }
 .stripe.hidden {
