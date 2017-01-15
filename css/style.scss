@@ -123,7 +123,7 @@ section.portfolio {
 	}
 }
 .portfolio .block {
-	margin: 20px auto;
+	margin: 19px auto;
 	display: block;
 	border: 2px solid $orange;
 	box-shadow: 0 0 0 white;
@@ -179,23 +179,23 @@ a.block:hover {
 	display: block;
 	position: absolute;
 	width: 120%;
-	height: 34px;
-	left: -9%;
+	height: 12px;
+	left: -8.9%;
 	z-index: -1;
 }
-.block.text::before {
+.block::before {
 	background: url('/img/top-bracket.svg') no-repeat;
 	top: -10px;
 }
 .block.text::after {
 	background: url('/img/bottom-bracket.svg') no-repeat;
-	bottom: -7px;
+	bottom: -12px;
 }
 .vertical-join {
-	background-image: url('/img/vertical-join.png');
+	background-image: url('/img/vertical-join-1.png');
 	background-position: center;
 	background-repeat: repeat-y;
-	height: 40px;
+	height: 50px;
 	display: block;
 	margin-top: -20px;
 	margin-bottom: -20px;

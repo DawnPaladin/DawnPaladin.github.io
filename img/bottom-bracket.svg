@@ -1,1 +1,12 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 279.7 19.19"><defs><style>.cls-1,.cls-2{fill:none;stroke:#f89c2a;stroke-miterlimit:10;}.cls-1{stroke-width:3px;}.cls-2{stroke-width:9px;}</style></defs><title>bottom-bracket</title><line class="cls-1" x1="4.51" y1="17.67" x2="275.18" y2="17.67"/><line class="cls-2" x1="275.18" y1="19.18" x2="275.2"/><line class="cls-2" x1="4.5" y1="19.18" x2="4.52"/></svg>
+<svg width="467" height="13" viewBox="0 0 467 13" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:figma="http://www.figma.com/figma/ns">
+<title>bottom-bracket</title>
+<desc>Created using Figma</desc>
+<g id="Canvas" transform="translate(204 235)" figma:type="canvas">
+<g id="bottom-bracket" style="mix-blend-mode:normal;" figma:type="vector-operation">
+<use xlink:href="#path0_fill" transform="matrix(1 0 0 -1 -204 -222.979)" fill="#F89C2A" style="mix-blend-mode:normal;"/>
+</g>
+</g>
+<defs>
+<path id="path0_fill" fill-rule="evenodd" d="M 0 0L 0 7L 0 12.0211L 466.965 12.0211L 466.965 7L 466.965 0L 421.965 0L 414.965 7L 52 7L 45 0L 0 0Z"/>
+</defs>
+</svg>
