@@ -142,9 +142,11 @@ a.block:hover {
 }
 .links {
   display: block;
-  margin-top: -1.3em;
+  margin: -1.3em auto 0;
   font-family: "Exo", sans-serif;
   font-weight: 500;
+  width: 467px;
+  max-width: 100%;
   .link {
     float: left;
     background: url('/img/link-left.svg');
@@ -180,15 +182,15 @@ a.block:hover {
 	position: absolute;
 	width: 120%;
 	height: 12px;
-	left: -8.9%;
+	left: -10%;
 	z-index: -1;
 }
 .block::before {
-	background: url('/img/top-bracket.svg') no-repeat;
+	background: url('/img/top-bracket.svg') no-repeat center;
 	top: -10px;
 }
 .block.text::after {
-	background: url('/img/bottom-bracket.svg') no-repeat;
+	background: url('/img/bottom-bracket.svg') no-repeat center;
 	bottom: -12px;
 }
 .vertical-join {
