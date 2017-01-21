@@ -165,7 +165,7 @@ var animatedBg = function () {
 			branchCursor += branchSegmentLength;
 		}
 		branchCursor = branchSegmentLength; // go back and create the nodes and documentation
-		for (var i = 0; i < branchLength; i++) {
+		for (var j = 0; j < branchLength; j++) {
 			var branchNode = new createjs.Shape();
 			branchNode.graphics.beginFill(treeColor).drawPolyStar(0, 0, nodeRadius, 6, 0, 90);
 			createjs.Tween.get(branchNode).to({ y: branchCursor }, 1000, createjs.Ease.quintInOut);
@@ -261,9 +261,9 @@ var animatedBg = function () {
 						exports.registry.dockingTree.xCorrection += 0.5;
 						//console.log("Docking tree x-correction raised to", exports.registry.dockingTree.xCorrection);
 					} else if (treeTip.x > 355) {
-							exports.registry.dockingTree.xCorrection -= 1;
-							//console.log("Docking tree x-correction lowered to", exports.registry.dockingTree.xCorrection);
-						}
+						exports.registry.dockingTree.xCorrection -= 1;
+						//console.log("Docking tree x-correction lowered to", exports.registry.dockingTree.xCorrection);
+					}
 				}
 			} // end if paused
 			window.onfocus = function () {
