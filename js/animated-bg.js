@@ -195,6 +195,19 @@ var animatedBg = function () {
 		var randomSign = (0.5 - Math.random()) * 2; // between -1 and 1
 		return base + variance * randomSign;
 	};
+	exports.removeOffstage = function () {
+		var branch, shape, success;
+		for (var b = 0; b < exports.registry.dockingTree.branches.length; b++) {
+			branch = exports.registry.dockingTree.branches[b].object;
+			for (var s = 0; s < branch.children.length; s++) {
+				shape = branch.children[s];
+				if (branch.localToGlobal(shape.x, shape.y).x < -2 * radius) {
+					success = branch.removeChild(shape);
+					// if (success) { console.log("Removed a shape"); } else { console.warn("Could not remove", shape); }
+				}
+			}
+		}
+	};
 	exports.run = function () {
 		createjs.MotionGuidePlugin.install();
 
@@ -234,6 +247,7 @@ var animatedBg = function () {
 				// drift tree to the left
 				var xOffset = timeElapsed * xOffsetPerSecond + exports.registry.dockingTree.xCorrection;
 				exports.registry.dockingTree.object.x = xOffset;
+				exports.removeOffstage();
 
 				// extend tree periodically
 				var timeSinceLastTreeExtension = timeElapsed - timeOfLastTreeExtension;
