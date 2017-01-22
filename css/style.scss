@@ -10,20 +10,18 @@ $image-block-width: 463px;
 body {
 	margin: 0;
 	background-color: #2b000c;
+	font-family: "Exo", sans-serif;
 }
 a {
 	color: #821517;
 }
 p {
-	font-family: "Exo", sans-serif;
 	font-weight: 500;
 }
 h1 {
-	font-family: "Exo", sans-serif;
 	font-size: 32px;
 }
 h2 {
-	font-family: "Exo", sans-serif;
 	font-size: 22px;
 	font-weight: 600;
 }
@@ -32,6 +30,7 @@ h1, h2, h3 {
 }
 code {
 	font-size: 1.25em;
+	display: inline;
 }
 
 section.intro {
@@ -252,38 +251,6 @@ a.block:hover {
 		top: 1400px;
 	}
 }
-.stripe.hidden {
-	display: none;
-}
-.small-projects-row {
-	background-color: gray;
-	padding: 1em;
-	text-align: center;
-}
-.stripe.intro-text {
-	font-size: 22px;
-	padding: 1em 20%;
-}
-section.contact {
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	flex-wrap: wrap;
-	font-family: "Exo", sans-serif;
-	font-weight: 500;
-}
-.contact-point {
-	margin: .5em;
-}
-.contact-point a {
-	color: $orange;
-	text-decoration: none;
-}
-.contact-point img {
-	height: 2.25em;
-	display: inline;
-	vertical-align: -60%;
-}
 .stripe {
 	display: flex;
 	flex-direction: column;
@@ -304,5 +271,63 @@ section.contact {
 	}
 	.item-group:nth-child(even) {
 		flex-direction: row-reverse;
+	}
+}
+.stripe.hidden {
+	display: none;
+}
+.small-projects-row {
+	background-color: gray;
+	padding: 1em;
+	text-align: center;
+}
+.stripe.intro-text {
+	font-size: 22px;
+	padding: 1em 20%;
+}
+section.contact {
+	background-color: hsla(344, 100%, 6%, 1);
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	flex-wrap: wrap;
+	font-weight: 500;
+}
+.contact-point {
+	margin: .5em;
+}
+.contact-point a {
+	color: $orange;
+	text-decoration: none;
+	&:hover, &:active, &:focus {
+		color: hsl(33, 94%, 68%);
+	}
+}
+.contact-point img {
+	height: 2.25em;
+	display: inline;
+	vertical-align: -60%;
+}
+section.coded-with {
+	padding: .5em;
+	p {
+		text-align: center;
+		text-transform: uppercase;
+		color: hsla(345, 100%, 18%, 1);
+		font-size: 1.5em;
+		font-weight: 800;
+		letter-spacing: .1em;
+	}
+	a {
+		margin: 0 10px;
+		opacity: 0.75;
+		transition: opacity 0.25s;
+	}
+	a:hover, a:active, a:focus {
+		opacity: 1;
+	}
+	img {
+		height: 44px;
+		vertical-align: middle;
 	}
 }

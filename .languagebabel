@@ -1,5 +1,0 @@
-{
-	"transpileOnSave": true,
-	"babelTranspilePath": "/js",
-	"babelSourcePath": "/js/src"
-}
