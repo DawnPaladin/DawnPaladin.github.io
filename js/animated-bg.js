@@ -4,6 +4,7 @@ var animatedBg = function () {
 	var exports = {};
 	exports.initCanvas = function () {
 		exports.stage = new createjs.Stage('animated-bg');
+		exports.stage.name = "stage";
 		exports.stage.update();
 	}();
 	exports.updateCanvas = function () {
@@ -39,6 +40,7 @@ var animatedBg = function () {
 		shape.x = x;
 		shape.y = y;
 		shape.alpha = 0;
+		shape.name = "shape";
 		exports.stage.addChild(shape);
 		exports.stage.update();
 		return shape;
@@ -92,10 +94,12 @@ var animatedBg = function () {
 		for (var i = 0; i < treeLength; i++) {
 			var trunk = exports.registry.dockingTree.trunk.object;
 			var trunkSegment = new createjs.Shape();
+			trunkSegment.name = "trunkSegment";
 			trunkSegment.graphics.beginFill(treeColor).drawRect(0, -0.5 * trunkSegmentWidth, trunkSegmentLength, trunkSegmentWidth).moveTo(exports.registry.trunkCursor);
 			trunk.addChild(trunkSegment);
 
 			var trunkNode = new createjs.Shape();
+			trunkNode.name = "trunkNode";
 			trunkNode.graphics.beginFill(treeColor).drawPolyStar(0, 0, nodeRadius, 6, 0).moveTo(exports.registry.trunkCursor + trunkSegmentLength);
 			trunk.addChild(trunkNode);
 			createjs.Tween.get(trunkSegment).to({ x: exports.registry.trunkCursor }, 1000, createjs.Ease.quintInOut);
@@ -116,6 +120,7 @@ var animatedBg = function () {
 			var stemWidth = 2;
 			var stemLength = trunkSegmentLength;
 			var leafStem = new createjs.Shape();
+			leafStem.name = "leafStem";
 			leafStem.graphics.beginFill(treeColor).drawRect(xOrigin, 0, stemLength, stemWidth);
 			createjs.Tween.get(leafStem).to({ y: yOrigin - stemWidth / 2 }, 1000, createjs.Ease.quintInOut);
 			branch.addChild(leafStem);
@@ -124,6 +129,7 @@ var animatedBg = function () {
 			var leaf = new createjs.Shape();
 			var leafCenterX = xOrigin + stemLength;
 			var leafCenterY = yOrigin;
+			leaf.name = "leaf";
 			leaf.graphics.setStrokeStyle(leafStrokeWeight);
 			leaf.graphics.beginStroke(treeColor);
 			leaf.graphics.beginFill(fillColor).drawCircle(leafCenterX, 0, leafRadius);
@@ -141,6 +147,7 @@ var animatedBg = function () {
 		var branch = new createjs.Container();
 		exports.registry.dockingTree.object.addChild(branch);
 
+		branch.name = "branch";
 		branch.x = xOrigin;
 		branch.y = yOrigin;
 		var branchLength = 3;
@@ -159,6 +166,7 @@ var animatedBg = function () {
 		for (var i = 0; i < branchLength; i++) {
 			// create the segments
 			var branchSegment = new createjs.Shape();
+			branchSegment.name = "branchSegment";
 			branchSegment.graphics.beginFill(treeColor).drawRect(branchSegmentWidth * -0.5, 0, branchSegmentWidth, branchSegmentWidth);
 			createjs.Tween.get(branchSegment).to({ y: branchCursor, scaleY: branchSegmentLength / branchSegmentWidth }, 1000, createjs.Ease.quintInOut);
 			branch.addChild(branchSegment);
@@ -167,6 +175,7 @@ var animatedBg = function () {
 		branchCursor = branchSegmentLength; // go back and create the nodes and documentation
 		for (var j = 0; j < branchLength; j++) {
 			var branchNode = new createjs.Shape();
+			branchNode.name = "branchNode";
 			branchNode.graphics.beginFill(treeColor).drawPolyStar(0, 0, nodeRadius, 6, 0, 90);
 			createjs.Tween.get(branchNode).to({ y: branchCursor }, 1000, createjs.Ease.quintInOut);
 			branch.addChild(branchNode);
@@ -196,15 +205,14 @@ var animatedBg = function () {
 		return base + variance * randomSign;
 	};
 	exports.removeOffstage = function () {
-		var branch, shape, success;
-		for (var b = 0; b < exports.registry.dockingTree.branches.length; b++) {
-			branch = exports.registry.dockingTree.branches[b].object;
-			for (var s = 0; s < branch.children.length; s++) {
-				shape = branch.children[s];
-				if (branch.localToGlobal(shape.x, shape.y).x < -2 * radius) {
-					success = branch.removeChild(shape);
-					// if (success) { console.log("Removed a shape"); } else { console.warn("Could not remove", shape); }
-				}
+		var branch, success;
+		var regDockingTree = exports.registry.dockingTree;
+		for (var b = 0; b < regDockingTree.branches.length; b++) {
+			branch = regDockingTree.branches[b].object;
+			if (branch && regDockingTree.object.localToGlobal(branch.x, branch.y).x < radius * -4) {
+				success = regDockingTree.object.removeChild(branch);
+				regDockingTree.branches.splice(b, 1);
+				break;
 			}
 		}
 	};
@@ -247,11 +255,11 @@ var animatedBg = function () {
 				// drift tree to the left
 				var xOffset = timeElapsed * xOffsetPerSecond + exports.registry.dockingTree.xCorrection;
 				exports.registry.dockingTree.object.x = xOffset;
-				exports.removeOffstage();
 
 				// extend tree periodically
 				var timeSinceLastTreeExtension = timeElapsed - timeOfLastTreeExtension;
 				if (timeSinceLastTreeExtension > treeExtensionInterval) {
+					exports.removeOffstage();
 					exports.extendDockingTree(1, function () {
 						if (trunkLength - intervalBetweenBranches >= exports.registry.dockingTree.lastNodeWithABranch) {
 							exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[trunkLength].x, 0);
