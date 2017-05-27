@@ -49,10 +49,9 @@ var animatedBg = function () {
 	};
 	exports.createRandomShapes = function (minX, maxX, minY, maxY, quantity) {
 		var shapes = [];
-		var x, y;
 		for (var i = 0; i < quantity; i++) {
-			x = (maxX - minX) * Math.random() + minX;
-			y = (maxY - minY) * Math.random() + minY;
+			var x = (maxX - minX) * Math.random() + minX;
+			var y = (maxY - minY) * Math.random() + minY;
 			var shape = exports.createRandomShape(x, y);
 			shapes.push(shape);
 		}
@@ -89,10 +88,9 @@ var animatedBg = function () {
 		exports.registry.dockingTree.branches = [];
 		exports.registry.dockingTree.leaves = [];
 	};
-	exports.extendDockingTree = function (treeLength, callback) {
-		if (!callback) {
-			callback = function callback() {};
-		}
+	exports.extendDockingTree = function (treeLength) {
+		var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
+
 		for (var i = 0; i < treeLength; i++) {
 			var trunk = exports.registry.dockingTree.trunk.object;
 			var trunkSegment = new createjs.Shape();
@@ -207,12 +205,11 @@ var animatedBg = function () {
 		return base + variance * randomSign;
 	};
 	exports.removeOffstage = function () {
-		var branch, success;
 		var regDockingTree = exports.registry.dockingTree;
 		for (var b = 0; b < regDockingTree.branches.length; b++) {
-			branch = regDockingTree.branches[b].object;
+			var branch = regDockingTree.branches[b].object;
 			if (branch && regDockingTree.object.localToGlobal(branch.x, branch.y).x < radius * -4) {
-				success = regDockingTree.object.removeChild(branch);
+				var success = regDockingTree.object.removeChild(branch);
 				regDockingTree.branches.splice(b, 1);
 				break;
 			}
@@ -237,8 +234,7 @@ var animatedBg = function () {
 			createjs.Tween.get(shape).to({ alpha: 1 }, 500);
 			createjs.Tween.get(shape).to({
 				guide: { path: myPath }
-			}, 7000) // eslint-disable-line
-			.call(moveInCircle, [shape, i, myPath]);
+			}, 7000).call(moveInCircle, [shape, i, myPath]);
 		}
 		function attractShape(leafInfo) {
 			var leafObj = leafInfo.object;
@@ -246,7 +242,7 @@ var animatedBg = function () {
 			var destination = container.localToGlobal(leafInfo.x, leafInfo.y);
 			var shape = exports.shapes.shift();
 			destination.x = destination.x + xOffsetPerSecond * 1000; // compensate for drift
-			createjs.Tween.get(shape, { override: true }).to(destination, 1000, Ease.quintInOut).call(animationCompvare, [shape, leafInfo, container]);
+			createjs.Tween.get(shape, { override: true }).to(destination, 1000, Ease.quintInOut).call(animationComplete, [shape, leafInfo, container]);
 			createjs.Tween.get(shape).to({ alpha: 1 }, 500);
 		}
 		function tick(event) {
@@ -309,7 +305,7 @@ var animatedBg = function () {
 			};
 			exports.stage.update();
 		}
-		function animationCompvare(shape, leaf, container) {
+		function animationComplete(shape, leaf, container) {
 			shape.x = leaf.x;
 			shape.y = leaf.y;
 			container.addChild(shape);

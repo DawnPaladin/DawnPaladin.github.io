@@ -1,7 +1,7 @@
 document.getElementById('animated-bg').width = window.innerWidth - 20;
 
-var animatedBg = function() {
-	var exports = {};
+const animatedBg = function() {
+	const exports = {};
 	exports.initCanvas = function() {
 		exports.stage = new createjs.Stage('animated-bg');
 		exports.stage.name = 'stage';
@@ -15,19 +15,19 @@ var animatedBg = function() {
 		exports.updateCanvas();
 	};
 	window.addEventListener('resize', exports.updateCanvasWidth);
-	var strokeWeight = 7;
-	var strokeColor = "white";
-	var fillColor = "#1f0009";
-	var radius = 17;
-	var nodeRadius = 7;
-	var treeColor = "#f89c2a";
-	var nodeColor = fillColor;
-	var trunkSegmentWidth = 8;
-	var trunkSegmentLength = 50; // originates at the center of the previous node
+	const strokeWeight = 7;
+	const strokeColor = "white";
+	const fillColor = "#1f0009";
+	const radius = 17;
+	const nodeRadius = 7;
+	const treeColor = "#f89c2a";
+	const nodeColor = fillColor;
+	const trunkSegmentWidth = 8;
+	const trunkSegmentLength = 50; // originates at the center of the previous node
 	exports.createRandomShape = function(x, y) {
-		var shape = new createjs.Shape();
+		const shape = new createjs.Shape();
 		shape.graphics.setStrokeStyle(strokeWeight).beginStroke(strokeColor).beginFill(fillColor);
-		var r = Math.random();
+		const r = Math.random();
 		if (r > 0.6) {
 			// circle
 			shape.graphics.drawCircle(0, 0, radius);
@@ -46,26 +46,25 @@ var animatedBg = function() {
 		return shape;
 	};
 	exports.createRandomShapes = function(minX, maxX, minY, maxY, quantity) {
-		var shapes = [];
-		var x, y;
-		for (var i = 0; i < quantity; i++) {
-			x = (maxX - minX) * Math.random() + minX;
-			y = (maxY - minY) * Math.random() + minY;
-			var shape = exports.createRandomShape(x, y);
+		const shapes = [];
+		for (let i = 0; i < quantity; i++) {
+			const x = (maxX - minX) * Math.random() + minX;
+			const y = (maxY - minY) * Math.random() + minY;
+			const shape = exports.createRandomShape(x, y);
 			shapes.push(shape);
 		}
 		return shapes;
 	};
 	exports.registry = {};
 	exports.initDockingTree = function(yOrigin) {
-		var dockingTree = new createjs.Container();
+		const dockingTree = new createjs.Container();
 		dockingTree.name = "dockingTree";
 		dockingTree.y = yOrigin;
 		exports.stage.addChild(dockingTree);
-		var origin = new createjs.Shape();
+		const origin = new createjs.Shape();
 		origin.graphics.beginFill(treeColor).drawCircle(0, 0, nodeRadius);
 		dockingTree.addChild(origin);
-		var trunk = new createjs.Container();
+		const trunk = new createjs.Container();
 		trunk.name = "trunk";
 		dockingTree.addChild(trunk);
 		exports.stage.update();
@@ -87,24 +86,21 @@ var animatedBg = function() {
 		exports.registry.dockingTree.branches = [];
 		exports.registry.dockingTree.leaves = [];
 	};
-	exports.extendDockingTree = function(treeLength, callback) {
-		if (!callback) {
-			callback = function() {};
-		}
-		for (var i = 0; i < treeLength; i++) {
-			var trunk = exports.registry.dockingTree.trunk.object;
-			var trunkSegment = new createjs.Shape();
+	exports.extendDockingTree = function(treeLength, callback = function() {}) {
+		for (let i = 0; i < treeLength; i++) {
+			const trunk = exports.registry.dockingTree.trunk.object;
+			const trunkSegment = new createjs.Shape();
 			trunkSegment.name = "trunkSegment";
 			trunkSegment.graphics.beginFill(treeColor).drawRect(0, -0.5 * trunkSegmentWidth, trunkSegmentLength, trunkSegmentWidth).moveTo(exports.registry.trunkCursor);
 			trunk.addChild(trunkSegment);
 
-			var trunkNode = new createjs.Shape();
+			const trunkNode = new createjs.Shape();
 			trunkNode.name = "trunkNode";
 			trunkNode.graphics.beginFill(treeColor).drawPolyStar(0, 0, nodeRadius, 6, 0).moveTo(exports.registry.trunkCursor + trunkSegmentLength);
 			trunk.addChild(trunkNode);
 			createjs.Tween.get(trunkSegment).to({ x: exports.registry.trunkCursor }, 1000, createjs.Ease.quintInOut);
 			createjs.Tween.get(trunkNode).to({ x: exports.registry.trunkCursor + trunkSegmentLength }, 1000, createjs.Ease.quintInOut).call(callback);
-			var registryEntry = {
+			const registryEntry = {
 				type: "trunkSegmentDescription",
 				x: exports.registry.trunkCursor + trunkSegmentLength,
 				y: 0,
@@ -116,26 +112,26 @@ var animatedBg = function() {
 		exports.stage.update();
 	};
 	exports.buildDescendingBranch = function(xOrigin, yOrigin) {
-		var buildLeaf = function(xOrigin, yOrigin) {
-			var stemWidth = 2;
-			var stemLength = trunkSegmentLength;
-			var leafStem = new createjs.Shape();
+		const buildLeaf = function(xOrigin, yOrigin) {
+			const stemWidth = 2;
+			const stemLength = trunkSegmentLength;
+			const leafStem = new createjs.Shape();
 			leafStem.name = "leafStem";
 			leafStem.graphics.beginFill(treeColor).drawRect(xOrigin, 0, stemLength, stemWidth);
 			createjs.Tween.get(leafStem).to({ y: yOrigin - stemWidth / 2 }, 1000, createjs.Ease.quintInOut);
 			branch.addChild(leafStem);
-			var leafRadius = nodeRadius;
-			var leafStrokeWeight = 2;
-			var leaf = new createjs.Shape();
-			var leafCenterX = xOrigin + stemLength;
-			var leafCenterY = yOrigin;
+			const leafRadius = nodeRadius;
+			const leafStrokeWeight = 2;
+			const leaf = new createjs.Shape();
+			const leafCenterX = xOrigin + stemLength;
+			const leafCenterY = yOrigin;
 			leaf.name = "leaf";
 			leaf.graphics.setStrokeStyle(leafStrokeWeight);
 			leaf.graphics.beginStroke(treeColor);
 			leaf.graphics.beginFill(fillColor).drawCircle(leafCenterX, 0, leafRadius);
 			createjs.Tween.get(leaf).to({ y: leafCenterY }, 1000, createjs.Ease.quintInOut);
 			branch.addChild(leaf);
-			var leafRegistryEntry = {
+			const leafRegistryEntry = {
 				type: "leafDescription",
 				branch: branch,
 				x: leafCenterX,
@@ -144,17 +140,17 @@ var animatedBg = function() {
 			};
 			exports.registry.dockingTree.leaves.push(leafRegistryEntry);
 		};
-		var branch = new createjs.Container();
+		const branch = new createjs.Container();
 		exports.registry.dockingTree.object.addChild(branch);
 
 		branch.name = "branch";
 		branch.x = xOrigin;
 		branch.y = yOrigin;
-		var branchLength = 3;
-		var branchSegmentLength = trunkSegmentLength;
-		var branchSegmentWidth = trunkSegmentWidth;
+		const branchLength = 3;
+		const branchSegmentLength = trunkSegmentLength;
+		const branchSegmentWidth = trunkSegmentWidth;
 
-		var branchRegistryEntry = {
+		const branchRegistryEntry = {
 			type: "branchDescription",
 			x: xOrigin,
 			y: yOrigin,
@@ -162,10 +158,10 @@ var animatedBg = function() {
 			nodes: []
 		};
 
-		var branchCursor = 0;
-		for (var i = 0; i < branchLength; i++) {
+		let branchCursor = 0;
+		for (let i = 0; i < branchLength; i++) {
 			// create the segments
-			var branchSegment = new createjs.Shape();
+			const branchSegment = new createjs.Shape();
 			branchSegment.name = "branchSegment";
 			branchSegment.graphics.beginFill(treeColor).drawRect(branchSegmentWidth * -0.5, 0, branchSegmentWidth, branchSegmentWidth);
 			createjs.Tween.get(branchSegment).to({ y: branchCursor, scaleY: branchSegmentLength / branchSegmentWidth }, 1000, createjs.Ease.quintInOut);
@@ -173,14 +169,14 @@ var animatedBg = function() {
 			branchCursor += branchSegmentLength;
 		}
 		branchCursor = branchSegmentLength; // go back and create the nodes and documentation
-		for (var j = 0; j < branchLength; j++) {
-			var branchNode = new createjs.Shape();
+		for (let j = 0; j < branchLength; j++) {
+			const branchNode = new createjs.Shape();
 			branchNode.name = "branchNode";
 			branchNode.graphics.beginFill(treeColor).drawPolyStar(0, 0, nodeRadius, 6, 0, 90);
 			createjs.Tween.get(branchNode).to({ y: branchCursor }, 1000, createjs.Ease.quintInOut);
 			branch.addChild(branchNode);
 
-			var nodeRegistryEntry = {
+			const nodeRegistryEntry = {
 				type: "branchNodeDescription",
 				x: 0,
 				y: branchCursor,
@@ -196,21 +192,20 @@ var animatedBg = function() {
 		exports.stage.update();
 	};
 	exports.circlePath = function(minX, minY, maxX, maxY) {
-		var midX = (minX + maxX) / 2;
-		var midY = (minY + maxY) / 2;
+		const midX = (minX + maxX) / 2;
+		const midY = (minY + maxY) / 2;
 		return [minX, midY, minX, maxY, midX, maxY, maxX, maxY, maxX, midY, maxX, minY, midX, minY, minX, minY, minX, midY];
 	};
 	exports.plusOrMinus = function(base, variance) {
-		var randomSign = (0.5 - Math.random()) * 2; // between -1 and 1
+		const randomSign = (0.5 - Math.random()) * 2; // between -1 and 1
 		return base + variance * randomSign;
 	};
 	exports.removeOffstage = function() {
-		var branch, success;
-		var regDockingTree = exports.registry.dockingTree;
-		for (var b = 0; b < regDockingTree.branches.length; b++) {
-			branch = regDockingTree.branches[b].object;
+		const regDockingTree = exports.registry.dockingTree;
+		for (let b = 0; b < regDockingTree.branches.length; b++) {
+			let branch = regDockingTree.branches[b].object;
 			if (branch && regDockingTree.object.localToGlobal(branch.x, branch.y).x < radius * -4) {
-				success = regDockingTree.object.removeChild(branch);
+				let success = regDockingTree.object.removeChild(branch);
 				regDockingTree.branches.splice(b, 1);
 				break;
 			}
@@ -219,14 +214,14 @@ var animatedBg = function() {
 	exports.run = function() {
 		createjs.MotionGuidePlugin.install();
 
-		var Ease = createjs.Ease;
-		var xOffsetPerSecond = -0.025;
-		var treeExtensionInterval = 2000;
-		var intervalBetweenBranches = 3;
-		var timeOfLastTreeExtension = 0;
+		const Ease = createjs.Ease;
+		const xOffsetPerSecond = -0.025;
+		const treeExtensionInterval = 2000;
+		const intervalBetweenBranches = 3;
+		let timeOfLastTreeExtension = 0;
 
 		function moveInCircle(shape, i, myPath) {
-			var variance = 50;
+			const variance = 50;
 			if (!myPath || myPath.length !== 18) {
 				// if myPath isn't being passed in from a previous call
 				var myPath = exports.circlePath( // eslint-disable-line
@@ -235,29 +230,29 @@ var animatedBg = function() {
 			createjs.Tween.get(shape).to({ alpha: 1 }, 500);
 			createjs.Tween.get(shape).to({
 				guide: { path: myPath }
-			}, 7000) // eslint-disable-line
+			}, 7000)
 			.call(moveInCircle, [shape, i, myPath]);
 		}
 		function attractShape(leafInfo) {
-			var leafObj = leafInfo.object;
-			var container = leafObj.parent;
-			var destination = container.localToGlobal(leafInfo.x, leafInfo.y);
-			var shape = exports.shapes.shift();
+			const leafObj = leafInfo.object;
+			const container = leafObj.parent;
+			const destination = container.localToGlobal(leafInfo.x, leafInfo.y);
+			const shape = exports.shapes.shift();
 			destination.x = destination.x + xOffsetPerSecond * 1000; // compensate for drift
-			createjs.Tween.get(shape, { override: true }).to(destination, 1000, Ease.quintInOut).call(animationCompvare, [shape, leafInfo, container]);
+			createjs.Tween.get(shape, { override: true }).to(destination, 1000, Ease.quintInOut).call(animationComplete, [shape, leafInfo, container]);
 			createjs.Tween.get(shape).to({ alpha: 1 }, 500);
 		}
 		function tick(event) {
-			var timeElapsed = createjs.Ticker.getTime();
-			var trunkLength = exports.registry.dockingTree.trunk.nodes.length;
-			var driftLock = false;
+			const timeElapsed = createjs.Ticker.getTime();
+			const trunkLength = exports.registry.dockingTree.trunk.nodes.length;
+			let driftLock = false;
 			if (!exports.registry.dockingTree.paused) {
 				// drift tree to the left
-				var xOffset = timeElapsed * xOffsetPerSecond + exports.registry.dockingTree.xCorrection;
+				const xOffset = timeElapsed * xOffsetPerSecond + exports.registry.dockingTree.xCorrection;
 				exports.registry.dockingTree.object.x = xOffset;
 
 				// extend tree periodically
-				var timeSinceLastTreeExtension = timeElapsed - timeOfLastTreeExtension;
+				const timeSinceLastTreeExtension = timeElapsed - timeOfLastTreeExtension;
 				if (timeSinceLastTreeExtension > treeExtensionInterval) {
 					exports.removeOffstage();
 					exports.extendDockingTree(1, function() {
@@ -265,19 +260,19 @@ var animatedBg = function() {
 							exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[trunkLength].x, 0);
 							exports.registry.dockingTree.lastNodeWithABranch = trunkLength;
 							while (exports.registry.dockingTree.leaves.length > 0) {
-								var leaf = exports.registry.dockingTree.leaves.pop();
+								const leaf = exports.registry.dockingTree.leaves.pop();
 								attractShape(leaf);
 							}
-							var newShapes = exports.createRandomShapes(shapeZone.minX, shapeZone.maxX, shapeZone.minY, shapeZone.maxY, 3);
+							const newShapes = exports.createRandomShapes(shapeZone.minX, shapeZone.maxX, shapeZone.minY, shapeZone.maxY, 3);
 							newShapes.forEach(moveInCircle);
 							exports.shapes = exports.shapes.concat(newShapes);
 						}
 					});
 					timeOfLastTreeExtension = timeElapsed;
 					// auto-throttle rate of drift
-					var nodes = exports.registry.dockingTree.trunk.nodes;
-					var lastNode = nodes[nodes.length - 1];
-					var treeTip = exports.registry.dockingTree.object.localToGlobal(lastNode.x, lastNode.y);
+					const nodes = exports.registry.dockingTree.trunk.nodes;
+					const lastNode = nodes[nodes.length - 1];
+					const treeTip = exports.registry.dockingTree.object.localToGlobal(lastNode.x, lastNode.y);
 					//console.log("Tree tip:", treeTip.x);
 					if (treeTip.x < 350) {
 						exports.registry.dockingTree.xCorrection += 0.5;
@@ -289,10 +284,10 @@ var animatedBg = function() {
 				}
 			} // end if paused
 			window.onfocus = function() {
-				var treeRoot = exports.registry.dockingTree.object.x;
-				var trunkPixelLength = trunkLength * trunkSegmentLength;
-				var trunkTarget = 300;
-				var drift = trunkTarget - trunkPixelLength - treeRoot;
+				const treeRoot = exports.registry.dockingTree.object.x;
+				const trunkPixelLength = trunkLength * trunkSegmentLength;
+				const trunkTarget = 300;
+				const drift = trunkTarget - trunkPixelLength - treeRoot;
 				if (drift > 100 && driftLock == false) {
 					exports.registry.dockingTree.xCorrection += drift;
 					driftLock = true; // onfocus() gets called twice in Safari. Need to keep the above line from being run twice.
@@ -307,7 +302,7 @@ var animatedBg = function() {
 			};
 			exports.stage.update();
 		}
-		function animationCompvare(shape, leaf, container) {
+		function animationComplete(shape, leaf, container) {
 			shape.x = leaf.x;
 			shape.y = leaf.y;
 			container.addChild(shape);
@@ -319,7 +314,7 @@ var animatedBg = function() {
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[3].x, 0);
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[6].x, 0);
 		exports.registry.dockingTree.lastNodeWithABranch = 6;
-		var shapeZone = {
+		const shapeZone = {
 			minX: 800,
 			maxX: 1000,
 			minY: 100,
@@ -330,7 +325,7 @@ var animatedBg = function() {
 			exports.shapes.forEach(moveInCircle);
 		}, 1000);
 		while (exports.registry.dockingTree.leaves.length > 0) {
-			var leaf = exports.registry.dockingTree.leaves.pop();
+			const leaf = exports.registry.dockingTree.leaves.pop();
 			attractShape(leaf);
 		}
 		exports.registry.dockingTree.leaves;
