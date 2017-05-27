@@ -1,15 +1,16 @@
-document.getElementById('animated-bg').width = window.innerWidth-20;
+document.getElementById('animated-bg').width = window.innerWidth - 20;
 
-var animatedBg = (function() {
+var animatedBg = function () {
 	var exports = {};
-	exports.initCanvas = (function() {
+	exports.initCanvas = function () {
 		exports.stage = new createjs.Stage('animated-bg');
+		exports.stage.name = "stage";
 		exports.stage.update();
-	})();
-	exports.updateCanvas = function() {
+	}();
+	exports.updateCanvas = function () {
 		exports.stage.update();
 	};
-	exports.updateCanvasWidth = function() {
+	exports.updateCanvasWidth = function () {
 		document.getElementById('animated-bg').width = window.innerWidth;
 		exports.updateCanvas();
 	};
@@ -27,33 +28,36 @@ var animatedBg = (function() {
 		var shape = new createjs.Shape();
 		shape.graphics.setStrokeStyle(strokeWeight).beginStroke(strokeColor).beginFill(fillColor);
 		var r = Math.random();
-		if (r > 0.6) { // circle
+		if (r > 0.6) {
+			// circle
 			shape.graphics.drawCircle(0, 0, radius);
-		} else if (r > 0.3) { // square
-			shape.graphics.drawRect(-radius, -radius, radius*2, radius*2);
+		} else if (r > 0.3) {
+			// square
+			shape.graphics.drawRect(-radius, -radius, radius * 2, radius * 2);
 		} else {
 			shape.graphics.drawPolyStar(0, 0, radius, 3, 0, r * 360);
 		}
 		shape.x = x;
 		shape.y = y;
 		shape.alpha = 0;
+		shape.name = "shape";
 		exports.stage.addChild(shape);
 		exports.stage.update();
 		return shape;
 	};
-	exports.createRandomShapes = function(minX, maxX, minY, maxY, quantity) {
+	exports.createRandomShapes = function (minX, maxX, minY, maxY, quantity) {
 		var shapes = [];
 		var x, y;
 		for (var i = 0; i < quantity; i++) {
-			x = ((maxX - minX) * Math.random()) + minX;
-			y = ((maxY - minY) * Math.random()) + minY;
+			x = (maxX - minX) * Math.random() + minX;
+			y = (maxY - minY) * Math.random() + minY;
 			var shape = exports.createRandomShape(x, y);
 			shapes.push(shape);
 		}
 		return shapes;
 	};
 	exports.registry = {};
-	exports.initDockingTree = function(yOrigin) {
+	exports.initDockingTree = function (yOrigin) {
 		var dockingTree = new createjs.Container();
 		dockingTree.name = "dockingTree";
 		dockingTree.y = yOrigin;
@@ -75,26 +79,27 @@ var animatedBg = (function() {
 			},
 			trunk: {
 				object: trunk,
-				nodes: [],
+				nodes: []
 			},
 			paused: false,
-			xCorrection: 0,
+			xCorrection: 0
 		};
 		exports.registry.dockingTree.branches = [];
 		exports.registry.dockingTree.leaves = [];
 	};
-	exports.extendDockingTree = function(treeLength, callback) {
-		if (!callback) { callback = function() {}; }
+	exports.extendDockingTree = function (treeLength, callback) {
+		if (!callback) {
+			callback = function () {};
+		}
 		for (var i = 0; i < treeLength; i++) {
 			var trunk = exports.registry.dockingTree.trunk.object;
 			var trunkSegment = new createjs.Shape();
-			trunkSegment
-				.graphics.beginFill(treeColor)
-				.drawRect(0, -0.5*trunkSegmentWidth, trunkSegmentLength, trunkSegmentWidth)
-				.moveTo(exports.registry.trunkCursor);
+			trunkSegment.name = "trunkSegment";
+			trunkSegment.graphics.beginFill(treeColor).drawRect(0, -0.5 * trunkSegmentWidth, trunkSegmentLength, trunkSegmentWidth).moveTo(exports.registry.trunkCursor);
 			trunk.addChild(trunkSegment);
 
 			var trunkNode = new createjs.Shape();
+			trunkNode.name = "trunkNode";
 			trunkNode.graphics.beginFill(treeColor).drawPolyStar(0, 0, nodeRadius, 6, 0).moveTo(exports.registry.trunkCursor + trunkSegmentLength);
 			trunk.addChild(trunkNode);
 			createjs.Tween.get(trunkSegment).to({ x: exports.registry.trunkCursor }, 1000, createjs.Ease.quintInOut);
@@ -103,33 +108,31 @@ var animatedBg = (function() {
 				type: "trunkSegmentDescription",
 				x: exports.registry.trunkCursor + trunkSegmentLength,
 				y: 0,
-				object: trunkNode,
+				object: trunkNode
 			};
 			exports.registry.dockingTree.trunk.nodes.push(registryEntry);
 			exports.registry.trunkCursor += trunkSegmentLength;
 		}
 		exports.stage.update();
 	};
-	exports.buildDescendingBranch = function(xOrigin, yOrigin) {
-		var buildLeaf = function(xOrigin, yOrigin) {
+	exports.buildDescendingBranch = function (xOrigin, yOrigin) {
+		var buildLeaf = function (xOrigin, yOrigin) {
 			var stemWidth = 2;
 			var stemLength = trunkSegmentLength;
 			var leafStem = new createjs.Shape();
-			leafStem
-				.graphics.beginFill(treeColor)
-				.drawRect(xOrigin, 0, stemLength, stemWidth);
-			createjs.Tween.get(leafStem).to({ y: yOrigin-stemWidth/2 }, 1000, createjs.Ease.quintInOut);
+			leafStem.name = "leafStem";
+			leafStem.graphics.beginFill(treeColor).drawRect(xOrigin, 0, stemLength, stemWidth);
+			createjs.Tween.get(leafStem).to({ y: yOrigin - stemWidth / 2 }, 1000, createjs.Ease.quintInOut);
 			branch.addChild(leafStem);
 			var leafRadius = nodeRadius;
 			var leafStrokeWeight = 2;
 			var leaf = new createjs.Shape();
 			var leafCenterX = xOrigin + stemLength;
 			var leafCenterY = yOrigin;
+			leaf.name = "leaf";
 			leaf.graphics.setStrokeStyle(leafStrokeWeight);
 			leaf.graphics.beginStroke(treeColor);
-			leaf
-				.graphics.beginFill(fillColor)
-				.drawCircle(leafCenterX, 0, leafRadius);
+			leaf.graphics.beginFill(fillColor).drawCircle(leafCenterX, 0, leafRadius);
 			createjs.Tween.get(leaf).to({ y: leafCenterY }, 1000, createjs.Ease.quintInOut);
 			branch.addChild(leaf);
 			var leafRegistryEntry = {
@@ -137,13 +140,14 @@ var animatedBg = (function() {
 				branch: branch,
 				x: leafCenterX,
 				y: leafCenterY,
-				object: leaf,
+				object: leaf
 			};
 			exports.registry.dockingTree.leaves.push(leafRegistryEntry);
 		};
 		var branch = new createjs.Container();
 		exports.registry.dockingTree.object.addChild(branch);
 
+		branch.name = "branch";
 		branch.x = xOrigin;
 		branch.y = yOrigin;
 		var branchLength = 3;
@@ -155,25 +159,24 @@ var animatedBg = (function() {
 			x: xOrigin,
 			y: yOrigin,
 			object: branch,
-			nodes: [],
+			nodes: []
 		};
 
 		var branchCursor = 0;
-		for (var i = 0; i < branchLength; i++) { // create the segments
+		for (var i = 0; i < branchLength; i++) {
+			// create the segments
 			var branchSegment = new createjs.Shape();
-			branchSegment
-				.graphics.beginFill(treeColor)
-				.drawRect(branchSegmentWidth * -0.5, 0, branchSegmentWidth, branchSegmentWidth);
-			createjs.Tween.get(branchSegment).to({ y: branchCursor, scaleY: branchSegmentLength/branchSegmentWidth }, 1000, createjs.Ease.quintInOut);
+			branchSegment.name = "branchSegment";
+			branchSegment.graphics.beginFill(treeColor).drawRect(branchSegmentWidth * -0.5, 0, branchSegmentWidth, branchSegmentWidth);
+			createjs.Tween.get(branchSegment).to({ y: branchCursor, scaleY: branchSegmentLength / branchSegmentWidth }, 1000, createjs.Ease.quintInOut);
 			branch.addChild(branchSegment);
 			branchCursor += branchSegmentLength;
 		}
 		branchCursor = branchSegmentLength; // go back and create the nodes and documentation
-		for (var i = 0; i < branchLength; i++) {
+		for (var j = 0; j < branchLength; j++) {
 			var branchNode = new createjs.Shape();
-			branchNode
-				.graphics.beginFill(treeColor)
-				.drawPolyStar(0, 0, nodeRadius, 6, 0, 90);
+			branchNode.name = "branchNode";
+			branchNode.graphics.beginFill(treeColor).drawPolyStar(0, 0, nodeRadius, 6, 0, 90);
 			createjs.Tween.get(branchNode).to({ y: branchCursor }, 1000, createjs.Ease.quintInOut);
 			branch.addChild(branchNode);
 
@@ -181,7 +184,7 @@ var animatedBg = (function() {
 				type: "branchNodeDescription",
 				x: 0,
 				y: branchCursor,
-				object: branchNode,
+				object: branchNode
 			};
 			branchRegistryEntry.nodes.push(nodeRegistryEntry);
 
@@ -192,16 +195,28 @@ var animatedBg = (function() {
 		exports.registry.dockingTree.branches.push(branchRegistryEntry);
 		exports.stage.update();
 	};
-	exports.circlePath = function(minX, minY, maxX, maxY) {
+	exports.circlePath = function (minX, minY, maxX, maxY) {
 		var midX = (minX + maxX) / 2;
 		var midY = (minY + maxY) / 2;
-		return [minX,midY, minX,maxY,midX,maxY, maxX,maxY,maxX,midY, maxX,minY,midX,minY, minX,minY,minX,midY ];
+		return [minX, midY, minX, maxY, midX, maxY, maxX, maxY, maxX, midY, maxX, minY, midX, minY, minX, minY, minX, midY];
 	};
-	exports.plusOrMinus = function(base, variance) {
+	exports.plusOrMinus = function (base, variance) {
 		var randomSign = (0.5 - Math.random()) * 2; // between -1 and 1
-		return base + (variance * randomSign);
+		return base + variance * randomSign;
 	};
-	exports.run = (function() {
+	exports.removeOffstage = function () {
+		var branch, success;
+		var regDockingTree = exports.registry.dockingTree;
+		for (var b = 0; b < regDockingTree.branches.length; b++) {
+			branch = regDockingTree.branches[b].object;
+			if (branch && regDockingTree.object.localToGlobal(branch.x, branch.y).x < radius * -4) {
+				success = regDockingTree.object.removeChild(branch);
+				regDockingTree.branches.splice(b, 1);
+				break;
+			}
+		}
+	};
+	exports.run = function () {
 		createjs.MotionGuidePlugin.install();
 
 		var Ease = createjs.Ease;
@@ -212,21 +227,16 @@ var animatedBg = (function() {
 
 		function moveInCircle(shape, i, myPath) {
 			var variance = 50;
-			if (!myPath || myPath.length !== 18) { // if myPath isn't being passed in from a previous call
+			if (!myPath || myPath.length !== 18) {
+				// if myPath isn't being passed in from a previous call
 				var myPath = exports.circlePath( // eslint-disable-line
-					exports.plusOrMinus(shapeZone.minX, variance),
-					exports.plusOrMinus(shapeZone.minY, variance),
-					exports.plusOrMinus(shapeZone.maxX, variance),
-					exports.plusOrMinus(shapeZone.maxY, variance)
-				);
+				exports.plusOrMinus(shapeZone.minX, variance), exports.plusOrMinus(shapeZone.minY, variance), exports.plusOrMinus(shapeZone.maxX, variance), exports.plusOrMinus(shapeZone.maxY, variance));
 			}
 			createjs.Tween.get(shape).to({ alpha: 1 }, 500);
-			createjs.Tween
-				.get(shape)
-				.to({
-					guide: { path: myPath }
-					}, 7000) // eslint-disable-line
-				.call(moveInCircle, [shape, i, myPath]);
+			createjs.Tween.get(shape).to({
+				guide: { path: myPath }
+			}, 7000) // eslint-disable-line
+			.call(moveInCircle, [shape, i, myPath]);
 		}
 		function attractShape(leafInfo) {
 			var leafObj = leafInfo.object;
@@ -234,9 +244,7 @@ var animatedBg = (function() {
 			var destination = container.localToGlobal(leafInfo.x, leafInfo.y);
 			var shape = exports.shapes.shift();
 			destination.x = destination.x + xOffsetPerSecond * 1000; // compensate for drift
-			createjs.Tween.get(shape, {override: true})
-				.to(destination, 1000, Ease.quintInOut)
-				.call(animationCompvare, [shape, leafInfo, container]);
+			createjs.Tween.get(shape, { override: true }).to(destination, 1000, Ease.quintInOut).call(animationCompvare, [shape, leafInfo, container]);
 			createjs.Tween.get(shape).to({ alpha: 1 }, 500);
 		}
 		function tick(event) {
@@ -251,7 +259,8 @@ var animatedBg = (function() {
 				// extend tree periodically
 				var timeSinceLastTreeExtension = timeElapsed - timeOfLastTreeExtension;
 				if (timeSinceLastTreeExtension > treeExtensionInterval) {
-					exports.extendDockingTree(1, function() {
+					exports.removeOffstage();
+					exports.extendDockingTree(1, function () {
 						if (trunkLength - intervalBetweenBranches >= exports.registry.dockingTree.lastNodeWithABranch) {
 							exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[trunkLength].x, 0);
 							exports.registry.dockingTree.lastNodeWithABranch = trunkLength;
@@ -279,7 +288,7 @@ var animatedBg = (function() {
 					}
 				}
 			} // end if paused
-			window.onfocus = function() {
+			window.onfocus = function () {
 				var treeRoot = exports.registry.dockingTree.object.x;
 				var trunkPixelLength = trunkLength * trunkSegmentLength;
 				var trunkTarget = 300;
@@ -292,7 +301,7 @@ var animatedBg = (function() {
 						drift: drift,
 						trunkTarget: trunkTarget,
 						trunkPixelLength: trunkPixelLength,
-						treeRoot: treeRoot,
+						treeRoot: treeRoot
 					});
 				}
 			};
@@ -317,7 +326,7 @@ var animatedBg = (function() {
 			maxY: 300
 		};
 		exports.shapes = exports.createRandomShapes(shapeZone.minX, shapeZone.maxX, shapeZone.minY, shapeZone.maxY, 18);
-		window.setTimeout(function() {
+		window.setTimeout(function () {
 			exports.shapes.forEach(moveInCircle);
 		}, 1000);
 		while (exports.registry.dockingTree.leaves.length > 0) {
@@ -327,7 +336,6 @@ var animatedBg = (function() {
 		exports.registry.dockingTree.leaves;
 		createjs.Ticker.addEventListener("tick", tick);
 		createjs.Ticker.setFPS(30);
-
-	})();
+	}();
 	return exports;
-})();
+}();
