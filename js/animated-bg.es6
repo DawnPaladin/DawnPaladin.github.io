@@ -4,7 +4,7 @@ var animatedBg = function () {
 	var exports = {};
 	exports.initCanvas = function () {
 		exports.stage = new createjs.Stage('animated-bg');
-		exports.stage.name = "stage";
+		exports.stage.name = `stage`;
 		exports.stage.update();
 	}();
 	exports.updateCanvas = function () {

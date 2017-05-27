@@ -1,10 +1,12 @@
+'use strict';
+
 document.getElementById('animated-bg').width = window.innerWidth - 20;
 
 var animatedBg = function () {
 	var exports = {};
 	exports.initCanvas = function () {
 		exports.stage = new createjs.Stage('animated-bg');
-		exports.stage.name = "stage";
+		exports.stage.name = 'stage';
 		exports.stage.update();
 	}();
 	exports.updateCanvas = function () {
@@ -89,7 +91,7 @@ var animatedBg = function () {
 	};
 	exports.extendDockingTree = function (treeLength, callback) {
 		if (!callback) {
-			callback = function () {};
+			callback = function callback() {};
 		}
 		for (var i = 0; i < treeLength; i++) {
 			var trunk = exports.registry.dockingTree.trunk.object;
@@ -116,7 +118,7 @@ var animatedBg = function () {
 		exports.stage.update();
 	};
 	exports.buildDescendingBranch = function (xOrigin, yOrigin) {
-		var buildLeaf = function (xOrigin, yOrigin) {
+		var buildLeaf = function buildLeaf(xOrigin, yOrigin) {
 			var stemWidth = 2;
 			var stemLength = trunkSegmentLength;
 			var leafStem = new createjs.Shape();
@@ -339,4 +341,3 @@ var animatedBg = function () {
 	}();
 	return exports;
 }();
-//# sourceMappingURL=animated-bg.js.map

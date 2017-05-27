@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.html",
-  "dependencies": {
-    "babel-cli": "^6.24.1"
+  "scripts": {
+    "build": "babel js --out-dir js",
+	 "s": "babel js --watch --out-dir js",
+    "version": "babel --version"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "babel-cli": "^6.24.1",
+    "babel-preset-env": "^1.5.1"
   },
   "repository": {
     "type": "git",
