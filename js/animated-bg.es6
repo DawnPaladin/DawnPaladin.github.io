@@ -1,16 +1,16 @@
 document.getElementById('animated-bg').width = window.innerWidth - 20;
 
-var animatedBg = function () {
+var animatedBg = function() {
 	var exports = {};
-	exports.initCanvas = function () {
+	exports.initCanvas = function() {
 		exports.stage = new createjs.Stage('animated-bg');
-		exports.stage.name = `stage`;
+		exports.stage.name = 'stage';
 		exports.stage.update();
 	}();
-	exports.updateCanvas = function () {
+	exports.updateCanvas = function() {
 		exports.stage.update();
 	};
-	exports.updateCanvasWidth = function () {
+	exports.updateCanvasWidth = function() {
 		document.getElementById('animated-bg').width = window.innerWidth;
 		exports.updateCanvas();
 	};
@@ -24,7 +24,7 @@ var animatedBg = function () {
 	var nodeColor = fillColor;
 	var trunkSegmentWidth = 8;
 	var trunkSegmentLength = 50; // originates at the center of the previous node
-	exports.createRandomShape = function (x, y) {
+	exports.createRandomShape = function(x, y) {
 		var shape = new createjs.Shape();
 		shape.graphics.setStrokeStyle(strokeWeight).beginStroke(strokeColor).beginFill(fillColor);
 		var r = Math.random();
@@ -45,7 +45,7 @@ var animatedBg = function () {
 		exports.stage.update();
 		return shape;
 	};
-	exports.createRandomShapes = function (minX, maxX, minY, maxY, quantity) {
+	exports.createRandomShapes = function(minX, maxX, minY, maxY, quantity) {
 		var shapes = [];
 		var x, y;
 		for (var i = 0; i < quantity; i++) {
@@ -57,7 +57,7 @@ var animatedBg = function () {
 		return shapes;
 	};
 	exports.registry = {};
-	exports.initDockingTree = function (yOrigin) {
+	exports.initDockingTree = function(yOrigin) {
 		var dockingTree = new createjs.Container();
 		dockingTree.name = "dockingTree";
 		dockingTree.y = yOrigin;
@@ -87,9 +87,9 @@ var animatedBg = function () {
 		exports.registry.dockingTree.branches = [];
 		exports.registry.dockingTree.leaves = [];
 	};
-	exports.extendDockingTree = function (treeLength, callback) {
+	exports.extendDockingTree = function(treeLength, callback) {
 		if (!callback) {
-			callback = function () {};
+			callback = function() {};
 		}
 		for (var i = 0; i < treeLength; i++) {
 			var trunk = exports.registry.dockingTree.trunk.object;
@@ -115,8 +115,8 @@ var animatedBg = function () {
 		}
 		exports.stage.update();
 	};
-	exports.buildDescendingBranch = function (xOrigin, yOrigin) {
-		var buildLeaf = function (xOrigin, yOrigin) {
+	exports.buildDescendingBranch = function(xOrigin, yOrigin) {
+		var buildLeaf = function(xOrigin, yOrigin) {
 			var stemWidth = 2;
 			var stemLength = trunkSegmentLength;
 			var leafStem = new createjs.Shape();
@@ -195,16 +195,16 @@ var animatedBg = function () {
 		exports.registry.dockingTree.branches.push(branchRegistryEntry);
 		exports.stage.update();
 	};
-	exports.circlePath = function (minX, minY, maxX, maxY) {
+	exports.circlePath = function(minX, minY, maxX, maxY) {
 		var midX = (minX + maxX) / 2;
 		var midY = (minY + maxY) / 2;
 		return [minX, midY, minX, maxY, midX, maxY, maxX, maxY, maxX, midY, maxX, minY, midX, minY, minX, minY, minX, midY];
 	};
-	exports.plusOrMinus = function (base, variance) {
+	exports.plusOrMinus = function(base, variance) {
 		var randomSign = (0.5 - Math.random()) * 2; // between -1 and 1
 		return base + variance * randomSign;
 	};
-	exports.removeOffstage = function () {
+	exports.removeOffstage = function() {
 		var branch, success;
 		var regDockingTree = exports.registry.dockingTree;
 		for (var b = 0; b < regDockingTree.branches.length; b++) {
@@ -216,7 +216,7 @@ var animatedBg = function () {
 			}
 		}
 	};
-	exports.run = function () {
+	exports.run = function() {
 		createjs.MotionGuidePlugin.install();
 
 		var Ease = createjs.Ease;
@@ -260,7 +260,7 @@ var animatedBg = function () {
 				var timeSinceLastTreeExtension = timeElapsed - timeOfLastTreeExtension;
 				if (timeSinceLastTreeExtension > treeExtensionInterval) {
 					exports.removeOffstage();
-					exports.extendDockingTree(1, function () {
+					exports.extendDockingTree(1, function() {
 						if (trunkLength - intervalBetweenBranches >= exports.registry.dockingTree.lastNodeWithABranch) {
 							exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[trunkLength].x, 0);
 							exports.registry.dockingTree.lastNodeWithABranch = trunkLength;
@@ -288,7 +288,7 @@ var animatedBg = function () {
 					}
 				}
 			} // end if paused
-			window.onfocus = function () {
+			window.onfocus = function() {
 				var treeRoot = exports.registry.dockingTree.object.x;
 				var trunkPixelLength = trunkLength * trunkSegmentLength;
 				var trunkTarget = 300;
@@ -326,7 +326,7 @@ var animatedBg = function () {
 			maxY: 300
 		};
 		exports.shapes = exports.createRandomShapes(shapeZone.minX, shapeZone.maxX, shapeZone.minY, shapeZone.maxY, 18);
-		window.setTimeout(function () {
+		window.setTimeout(function() {
 			exports.shapes.forEach(moveInCircle);
 		}, 1000);
 		while (exports.registry.dockingTree.leaves.length > 0) {
