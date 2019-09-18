@@ -200,6 +200,7 @@ a.block:hover {
 	display: block;
 	margin-top: -20px;
 	margin-bottom: -20px;
+	z-index: -1;
 }
 .vertical-divider {
 	display: block;
@@ -236,15 +237,15 @@ a.block:hover {
 	}
 	.second.attach-point {
     @include right-attach-point;
-		top: 300px;
+		top: 150px;
 	}
 	.third.attach-point {
-    @include left-attach-point;
-		top: 900px;
+    @include right-attach-point;
+		top: 700px;
 	}
 	.fourth.attach-point {
-    @include right-attach-point;
-		top: 1300px;
+    @include left-attach-point;
+		top: 900px;
 	}
 	.fifth.attach-point {
     @include left-attach-point;
