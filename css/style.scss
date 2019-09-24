@@ -243,11 +243,11 @@ a.block:hover {
 	}
 	.third.attach-point {
     @include right-attach-point;
-		top: 700px;
+		top: 650px;
 	}
 	.fourth.attach-point {
     @include left-attach-point;
-		top: 900px;
+		top: 950px;
 	}
 	.fifth.attach-point {
     @include left-attach-point;
@@ -287,6 +287,11 @@ a.block:hover {
 .stripe.intro-text {
 	font-size: 22px;
 	padding: 1em 20%;
+}
+.legend {
+	background: white;
+	width: 463px;
+	padding: 10px;
 }
 section.contact {
 	background-color: hsla(344, 100%, 6%, 1);
