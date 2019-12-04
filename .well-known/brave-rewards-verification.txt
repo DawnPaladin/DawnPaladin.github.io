@@ -1,0 +1,4 @@
+This is a Brave Rewards publisher verification file.
+
+Domain: jamesharris.design
+Token: 5a4fc998e9d15884acd45297d690a8bf26a2290bd39793ebb1a44496d68f0223
