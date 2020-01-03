@@ -235,14 +235,14 @@ a.block:hover {
 	}
 	.first.attach-point {
     @include left-attach-point;
-		top: 100px;
+		top: 50px;
 	}
 	.second.attach-point {
     @include right-attach-point;
-		top: 150px;
+		top: 300px;
 	}
 	.third.attach-point {
-    @include right-attach-point;
+    @include left-attach-point;
 		top: 650px;
 	}
 	.fourth.attach-point {
