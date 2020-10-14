@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "build": "babel js --out-dir js",
-	 "s": "babel js --watch --out-dir js",
+    "s": "babel js --watch --out-dir js",
     "version": "babel --version"
   },
   "devDependencies": {

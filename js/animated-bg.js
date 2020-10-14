@@ -82,7 +82,6 @@ var animatedBg = function () {
 				object: trunk,
 				nodes: []
 			},
-			paused: false,
 			xCorrection: 0
 		};
 		exports.registry.dockingTree.branches = [];
@@ -246,10 +245,10 @@ var animatedBg = function () {
 			createjs.Tween.get(shape).to({ alpha: 1 }, 500);
 		}
 		function tick(event) {
-			var timeElapsed = createjs.Ticker.getTime();
+			var timeElapsed = createjs.Ticker.getTime(true);
 			var trunkLength = exports.registry.dockingTree.trunk.nodes.length;
 			var driftLock = false;
-			if (!exports.registry.dockingTree.paused) {
+			if (!createjs.Ticker.getPaused()) {
 				// drift tree to the left
 				var xOffset = timeElapsed * xOffsetPerSecond + exports.registry.dockingTree.xCorrection;
 				exports.registry.dockingTree.object.x = xOffset;
@@ -286,23 +285,12 @@ var animatedBg = function () {
 					}
 				}
 			} // end if paused
-			window.onfocus = function () {
-				var treeRoot = exports.registry.dockingTree.object.x;
-				var trunkPixelLength = trunkLength * trunkSegmentLength;
-				var trunkTarget = 300;
-				var drift = trunkTarget - trunkPixelLength - treeRoot;
-				if (drift > 100 && driftLock == false) {
-					exports.registry.dockingTree.xCorrection += drift;
-					driftLock = true; // onfocus() gets called twice in Safari. Need to keep the above line from being run twice.
-					console.log({
-						name: "Drift correction",
-						drift: drift,
-						trunkTarget: trunkTarget,
-						trunkPixelLength: trunkPixelLength,
-						treeRoot: treeRoot
-					});
-				}
-			};
+			window.addEventListener('blur', function () {
+				createjs.Ticker.setPaused(true);
+			});
+			window.addEventListener('focus', function () {
+				createjs.Ticker.setPaused(false);
+			});
 			exports.stage.update();
 		}
 		function animationComplete(shape, leaf, container) {
