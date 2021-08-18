@@ -1,14 +1,24 @@
 {
-    "version": "0.1.0",
+    "version": "2.0.0",
     "command": "${workspaceRoot}/node_modules/.bin/babel",
-    "isShellCommand": true,
     "tasks": [
         {
-            "args": ["js/src", "--out-dir", "js", "-w", "--source-maps"],
-            "taskName": "watch",
-            "suppressTaskName": true,
-            "isBuildCommand": true,
-            "isBackground": true
+            "label": "watch",
+            "type": "shell",
+            "command": "${workspaceRoot}/node_modules/.bin/babel",
+            "args": [
+                "js/src",
+                "--out-dir",
+                "js",
+                "-w",
+                "--source-maps"
+            ],
+            "isBackground": true,
+            "problemMatcher": [],
+            "group": {
+                "_id": "build",
+                "isDefault": false
+            }
         }
     ]
 }
