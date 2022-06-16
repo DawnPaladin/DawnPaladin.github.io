@@ -30,9 +30,9 @@ var animatedBg = function () {
 	var nodeColor = fillColor;
 	var trunkSegmentWidth = 8;
 	var trunkSegmentLength = 50; // originates at the center of the previous node
-	exports.createShape = function (shapeType, x, y) {
+	exports.createShape = function (shapeType, x, y, color) {
 		var shape = new createjs.Shape();
-		shape.graphics.setStrokeStyle(strokeWeight).beginStroke(strokeColor).beginFill(fillColor);
+		shape.graphics.setStrokeStyle(strokeWeight).beginStroke(strokeColor).beginFill(color || fillColor);
 		if (shapeType == "circle") {
 			shape.graphics.drawCircle(0, 0, radius);
 		} else if (shapeType == "square") {
@@ -43,11 +43,11 @@ var animatedBg = function () {
 			// random shape
 			var r = Math.random();
 			if (r > 0.6) {
-				return exports.createShape("circle", x, y);
+				return exports.createShape("circle", x, y, color);
 			} else if (r > 0.3) {
-				return exports.createShape("square", x, y);
+				return exports.createShape("square", x, y, color);
 			} else {
-				return exports.createShape("triangle", x, y);
+				return exports.createShape("triangle", x, y, color);
 			}
 		}
 		shape.name = "shape";
@@ -60,7 +60,7 @@ var animatedBg = function () {
 		exports.stage.update();
 		return shape;
 	};
-	exports.createShapes = function (shapeType, quantity) {
+	exports.createShapes = function (shapeType, quantity, color) {
 		var minX = shapeZone.minX,
 		    maxX = shapeZone.maxX,
 		    minY = shapeZone.minY,
@@ -70,7 +70,7 @@ var animatedBg = function () {
 		for (var i = 0; i < quantity; i++) {
 			var x = (maxX - minX) * Math.random() + minX;
 			var y = (maxY - minY) * Math.random() + minY;
-			var shape = exports.createShape(shapeType, x, y);
+			var shape = exports.createShape(shapeType, x, y, color);
 			shapes.push(shape);
 		}
 		return shapes;
@@ -212,10 +212,19 @@ var animatedBg = function () {
 		exports.registry.dockingTree.branches.push(branchRegistryEntry);
 		exports.stage.update();
 	};
+	// Returns a series of 9 X/Y coordinates describing a circle path.
 	exports.circlePath = function (minX, minY, maxX, maxY) {
 		var midX = (minX + maxX) / 2;
 		var midY = (minY + maxY) / 2;
-		return [minX, midY, minX, maxY, midX, maxY, maxX, maxY, maxX, midY, maxX, minY, midX, minY, minX, minY, minX, midY];
+
+		// These 4 paths are the same, they just start at different points.
+		var path1 = [minX, midY, minX, maxY, midX, maxY, maxX, maxY, maxX, midY, maxX, minY, midX, minY, minX, minY, minX, midY];
+		var path2 = [midX, maxY, maxX, maxY, maxX, midY, maxX, minY, midX, minY, minX, minY, minX, midY, minX, maxY, midX, maxY];
+		var path3 = [maxX, midY, maxX, minY, midX, minY, minX, minY, minX, midY, minX, maxY, midX, maxY, maxX, maxY, maxX, midY];
+		var path4 = [midX, minY, minX, minY, minX, midY, minX, maxY, midX, maxY, maxX, maxY, maxX, midY, maxX, minY, midX, minY];
+		var paths = [path1, path2, path3, path4];
+
+		return paths[Math.floor(Math.random() * 4)]; // choose one of the 4 paths randomly
 	};
 	exports.plusOrMinus = function (base, variance) {
 		var randomSign = (0.5 - Math.random()) * 2; // between -1 and 1
@@ -262,10 +271,9 @@ var animatedBg = function () {
 
 		function moveInCircle(shape, i, myPath) {
 			var variance = 50;
-			if (!myPath || myPath.length !== 18) {
+			if (!myPath || myPath.length !== 27) {
 				// if myPath isn't being passed in from a previous call
-				var myPath = exports.circlePath( // eslint-disable-line
-				exports.plusOrMinus(shapeZone.minX, variance), exports.plusOrMinus(shapeZone.minY, variance), exports.plusOrMinus(shapeZone.maxX, variance), exports.plusOrMinus(shapeZone.maxY, variance));
+				var myPath = exports.circlePath(exports.plusOrMinus(shapeZone.minX, variance), exports.plusOrMinus(shapeZone.minY, variance), exports.plusOrMinus(shapeZone.maxX, variance), exports.plusOrMinus(shapeZone.maxY, variance));
 			}
 			createjs.Tween.get(shape).to({ alpha: 1 }, 500);
 			createjs.Tween.get(shape).to({
@@ -316,7 +324,9 @@ var animatedBg = function () {
 								attractShape(leaf, currentShape);
 							}
 							var newShapes = exports.createShapes(currentShape, 3);
-							newShapes.forEach(moveInCircle);
+							newShapes.forEach(function (shape) {
+								return moveInCircle(shape);
+							});
 							exports.shapes = exports.shapes.concat(newShapes);
 							exports.shapeCycle.advance();
 						}
@@ -357,13 +367,13 @@ var animatedBg = function () {
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[3].x, 0);
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[6].x, 0);
 		exports.registry.dockingTree.lastNodeWithABranch = 6;
-		exports.shapes = exports.createShapes("random", 18);
-		(_exports$shapes = exports.shapes).push.apply(_exports$shapes, _toConsumableArray(exports.createShapes("square", 3)));
-		(_exports$shapes2 = exports.shapes).push.apply(_exports$shapes2, _toConsumableArray(exports.createShapes("circle", 3)));
-		(_exports$shapes3 = exports.shapes).push.apply(_exports$shapes3, _toConsumableArray(exports.createShapes("triangle", 3)));
-		window.setTimeout(function () {
-			exports.shapes.forEach(moveInCircle);
-		}, 1000);
+		exports.shapes = exports.createShapes("random", 18, "yellow");
+		(_exports$shapes = exports.shapes).push.apply(_exports$shapes, _toConsumableArray(exports.createShapes("square", 3, "red")));
+		(_exports$shapes2 = exports.shapes).push.apply(_exports$shapes2, _toConsumableArray(exports.createShapes("circle", 3, "red")));
+		(_exports$shapes3 = exports.shapes).push.apply(_exports$shapes3, _toConsumableArray(exports.createShapes("triangle", 3, "red")));
+		exports.shapes.forEach(function (shape) {
+			return moveInCircle(shape);
+		});
 		var leavesAttached = 0;
 		while (exports.registry.dockingTree.leaves.length > 0) {
 			var leaf = exports.registry.dockingTree.leaves.pop();
