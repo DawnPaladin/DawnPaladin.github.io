@@ -1,4 +1,4 @@
 {
-	"only": ["es6"],
-	"presets": ["env"]
+	"presets": ["env"],
+	"only": ["./js/*.es6"],
 }
