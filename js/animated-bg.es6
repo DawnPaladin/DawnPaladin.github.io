@@ -24,37 +24,46 @@ const animatedBg = function() {
 	const nodeColor = fillColor;
 	const trunkSegmentWidth = 8;
 	const trunkSegmentLength = 50; // originates at the center of the previous node
-	exports.createRandomShape = function(x, y) {
+	exports.createShape = function(shapeType, x, y) {
 		const shape = new createjs.Shape();
 		shape.graphics.setStrokeStyle(strokeWeight).beginStroke(strokeColor).beginFill(fillColor);
-		const r = Math.random();
-		if (r > 0.6) {
-			// circle
+		if (shapeType == "circle") {
 			shape.graphics.drawCircle(0, 0, radius);
-		} else if (r > 0.3) {
-			// square
+		} else if (shapeType == "square") {
 			shape.graphics.drawRect(-radius, -radius, radius * 2, radius * 2);
-		} else {
-			shape.graphics.drawPolyStar(0, 0, radius, 3, 0, r * 360);
+		} else if (shapeType == "triangle") {
+			shape.graphics.drawPolyStar(0, 0, radius, 3, 0, Math.random() * 360);
+		} else { // random shape
+			const r = Math.random();
+			if (r > 0.6) {
+				return exports.createShape("circle", x, y);
+			} else if (r > 0.3) {
+				return exports.createShape("square", x, y);
+			} else {
+				return exports.createShape("triangle", x, y);
+			}
 		}
+		shape.name = "shape";
 		shape.x = x;
 		shape.y = y;
 		shape.alpha = 0;
 		shape.name = "shape";
+		shape.type = shapeType;
 		exports.stage.addChild(shape);
 		exports.stage.update();
 		return shape;
-	};
-	exports.createRandomShapes = function(minX, maxX, minY, maxY, quantity) {
+	}
+	exports.createShapes = function(shapeZone, shapeType, quantity) {
+		const {minX, maxX, minY, maxY} = shapeZone
 		const shapes = [];
 		for (let i = 0; i < quantity; i++) {
 			const x = (maxX - minX) * Math.random() + minX;
 			const y = (maxY - minY) * Math.random() + minY;
-			const shape = exports.createRandomShape(x, y);
+			const shape = exports.createShape(shapeType, x, y);
 			shapes.push(shape);
 		}
 		return shapes;
-	};
+	}
 	exports.registry = {};
 	exports.initDockingTree = function(yOrigin) {
 		const dockingTree = new createjs.Container();
@@ -232,11 +241,16 @@ const animatedBg = function() {
 			}, 7000)
 			.call(moveInCircle, [shape, i, myPath]);
 		}
-		function attractShape(leafInfo) {
+		function extractShape(shapeType) {
+			const shapeIndex = exports.shapes.findIndex(shape => shape.type == shapeType);
+			const [shape] = exports.shapes.splice(shapeIndex, 1);
+			return shape;
+		}
+		function attractShape(leafInfo, shapeType) {
 			const leafObj = leafInfo.object;
 			const container = leafObj.parent;
 			const destination = container.localToGlobal(leafInfo.x, leafInfo.y);
-			const shape = exports.shapes.shift();
+			const shape = extractShape(shapeType);
 			destination.x = destination.x + xOffsetPerSecond * 1000; // compensate for drift
 			createjs.Tween.get(shape, { override: true }).to(destination, 1000, Ease.quintInOut).call(animationComplete, [shape, leafInfo, container]);
 			createjs.Tween.get(shape).to({ alpha: 1 }, 500);
@@ -262,7 +276,7 @@ const animatedBg = function() {
 								const leaf = exports.registry.dockingTree.leaves.pop();
 								attractShape(leaf);
 							}
-							const newShapes = exports.createRandomShapes(shapeZone.minX, shapeZone.maxX, shapeZone.minY, shapeZone.maxY, 3);
+							const newShapes = exports.createShapes(shapeZone, "random", 3);
 							newShapes.forEach(moveInCircle);
 							exports.shapes = exports.shapes.concat(newShapes);
 						}
@@ -308,7 +322,10 @@ const animatedBg = function() {
 			minY: 100,
 			maxY: 300
 		};
-		exports.shapes = exports.createRandomShapes(shapeZone.minX, shapeZone.maxX, shapeZone.minY, shapeZone.maxY, 18);
+		exports.shapes = exports.createShapes(shapeZone, "random", 18);
+		exports.shapes.push(...exports.createShapes(shapeZone, "square", 3))
+		exports.shapes.push(...exports.createShapes(shapeZone, "circle", 3))
+		exports.shapes.push(...exports.createShapes(shapeZone, "triangle", 3))
 		window.setTimeout(function() {
 			exports.shapes.forEach(moveInCircle);
 		}, 1000);

@@ -1,5 +1,9 @@
 'use strict';
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 document.getElementById('animated-bg').width = window.innerWidth - 20;
 
 var animatedBg = function () {
@@ -26,33 +30,47 @@ var animatedBg = function () {
 	var nodeColor = fillColor;
 	var trunkSegmentWidth = 8;
 	var trunkSegmentLength = 50; // originates at the center of the previous node
-	exports.createRandomShape = function (x, y) {
+	exports.createShape = function (shapeType, x, y) {
 		var shape = new createjs.Shape();
 		shape.graphics.setStrokeStyle(strokeWeight).beginStroke(strokeColor).beginFill(fillColor);
-		var r = Math.random();
-		if (r > 0.6) {
-			// circle
+		if (shapeType == "circle") {
 			shape.graphics.drawCircle(0, 0, radius);
-		} else if (r > 0.3) {
-			// square
+		} else if (shapeType == "square") {
 			shape.graphics.drawRect(-radius, -radius, radius * 2, radius * 2);
+		} else if (shapeType == "triangle") {
+			shape.graphics.drawPolyStar(0, 0, radius, 3, 0, Math.random() * 360);
 		} else {
-			shape.graphics.drawPolyStar(0, 0, radius, 3, 0, r * 360);
+			// random shape
+			var r = Math.random();
+			if (r > 0.6) {
+				return exports.createShape("circle", x, y);
+			} else if (r > 0.3) {
+				return exports.createShape("square", x, y);
+			} else {
+				return exports.createShape("triangle", x, y);
+			}
 		}
+		shape.name = "shape";
 		shape.x = x;
 		shape.y = y;
 		shape.alpha = 0;
 		shape.name = "shape";
+		shape.type = shapeType;
 		exports.stage.addChild(shape);
 		exports.stage.update();
 		return shape;
 	};
-	exports.createRandomShapes = function (minX, maxX, minY, maxY, quantity) {
+	exports.createShapes = function (shapeZone, shapeType, quantity) {
+		var minX = shapeZone.minX,
+		    maxX = shapeZone.maxX,
+		    minY = shapeZone.minY,
+		    maxY = shapeZone.maxY;
+
 		var shapes = [];
 		for (var i = 0; i < quantity; i++) {
 			var x = (maxX - minX) * Math.random() + minX;
 			var y = (maxY - minY) * Math.random() + minY;
-			var shape = exports.createRandomShape(x, y);
+			var shape = exports.createShape(shapeType, x, y);
 			shapes.push(shape);
 		}
 		return shapes;
@@ -215,6 +233,8 @@ var animatedBg = function () {
 		}
 	};
 	exports.run = function () {
+		var _exports$shapes, _exports$shapes2, _exports$shapes3;
+
 		createjs.MotionGuidePlugin.install();
 
 		var Ease = createjs.Ease;
@@ -235,11 +255,22 @@ var animatedBg = function () {
 				guide: { path: myPath }
 			}, 7000).call(moveInCircle, [shape, i, myPath]);
 		}
-		function attractShape(leafInfo) {
+		function extractShape(shapeType) {
+			var shapeIndex = exports.shapes.findIndex(function (shape) {
+				return shape.type == shapeType;
+			});
+
+			var _exports$shapes$splic = exports.shapes.splice(shapeIndex, 1),
+			    _exports$shapes$splic2 = _slicedToArray(_exports$shapes$splic, 1),
+			    shape = _exports$shapes$splic2[0];
+
+			return shape;
+		}
+		function attractShape(leafInfo, shapeType) {
 			var leafObj = leafInfo.object;
 			var container = leafObj.parent;
 			var destination = container.localToGlobal(leafInfo.x, leafInfo.y);
-			var shape = exports.shapes.shift();
+			var shape = extractShape(shapeType);
 			destination.x = destination.x + xOffsetPerSecond * 1000; // compensate for drift
 			createjs.Tween.get(shape, { override: true }).to(destination, 1000, Ease.quintInOut).call(animationComplete, [shape, leafInfo, container]);
 			createjs.Tween.get(shape).to({ alpha: 1 }, 500);
@@ -265,7 +296,7 @@ var animatedBg = function () {
 								var leaf = exports.registry.dockingTree.leaves.pop();
 								attractShape(leaf);
 							}
-							var newShapes = exports.createRandomShapes(shapeZone.minX, shapeZone.maxX, shapeZone.minY, shapeZone.maxY, 3);
+							var newShapes = exports.createShapes(shapeZone, "random", 3);
 							newShapes.forEach(moveInCircle);
 							exports.shapes = exports.shapes.concat(newShapes);
 						}
@@ -311,7 +342,10 @@ var animatedBg = function () {
 			minY: 100,
 			maxY: 300
 		};
-		exports.shapes = exports.createRandomShapes(shapeZone.minX, shapeZone.maxX, shapeZone.minY, shapeZone.maxY, 18);
+		exports.shapes = exports.createShapes(shapeZone, "random", 18);
+		(_exports$shapes = exports.shapes).push.apply(_exports$shapes, _toConsumableArray(exports.createShapes(shapeZone, "square", 3)));
+		(_exports$shapes2 = exports.shapes).push.apply(_exports$shapes2, _toConsumableArray(exports.createShapes(shapeZone, "circle", 3)));
+		(_exports$shapes3 = exports.shapes).push.apply(_exports$shapes3, _toConsumableArray(exports.createShapes(shapeZone, "triangle", 3)));
 		window.setTimeout(function () {
 			exports.shapes.forEach(moveInCircle);
 		}, 1000);
