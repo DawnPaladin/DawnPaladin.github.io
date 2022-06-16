@@ -60,7 +60,7 @@ var animatedBg = function () {
 		exports.stage.update();
 		return shape;
 	};
-	exports.createShapes = function (shapeZone, shapeType, quantity) {
+	exports.createShapes = function (shapeType, quantity) {
 		var minX = shapeZone.minX,
 		    maxX = shapeZone.maxX,
 		    minY = shapeZone.minY,
@@ -232,6 +232,12 @@ var animatedBg = function () {
 			}
 		}
 	};
+	var shapeZone = {
+		minX: 800,
+		maxX: 1000,
+		minY: 100,
+		maxY: 300
+	};
 	exports.shapeCycle = {
 		shapes: ["circle", "square", "triangle"],
 		index: 0,
@@ -309,7 +315,7 @@ var animatedBg = function () {
 								var leaf = exports.registry.dockingTree.leaves.pop();
 								attractShape(leaf, currentShape);
 							}
-							var newShapes = exports.createShapes(shapeZone, currentShape, 3);
+							var newShapes = exports.createShapes(currentShape, 3);
 							newShapes.forEach(moveInCircle);
 							exports.shapes = exports.shapes.concat(newShapes);
 							exports.shapeCycle.advance();
@@ -351,16 +357,10 @@ var animatedBg = function () {
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[3].x, 0);
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[6].x, 0);
 		exports.registry.dockingTree.lastNodeWithABranch = 6;
-		var shapeZone = {
-			minX: 800,
-			maxX: 1000,
-			minY: 100,
-			maxY: 300
-		};
-		exports.shapes = exports.createShapes(shapeZone, "random", 18);
-		(_exports$shapes = exports.shapes).push.apply(_exports$shapes, _toConsumableArray(exports.createShapes(shapeZone, "square", 3)));
-		(_exports$shapes2 = exports.shapes).push.apply(_exports$shapes2, _toConsumableArray(exports.createShapes(shapeZone, "circle", 3)));
-		(_exports$shapes3 = exports.shapes).push.apply(_exports$shapes3, _toConsumableArray(exports.createShapes(shapeZone, "triangle", 3)));
+		exports.shapes = exports.createShapes("random", 18);
+		(_exports$shapes = exports.shapes).push.apply(_exports$shapes, _toConsumableArray(exports.createShapes("square", 3)));
+		(_exports$shapes2 = exports.shapes).push.apply(_exports$shapes2, _toConsumableArray(exports.createShapes("circle", 3)));
+		(_exports$shapes3 = exports.shapes).push.apply(_exports$shapes3, _toConsumableArray(exports.createShapes("triangle", 3)));
 		window.setTimeout(function () {
 			exports.shapes.forEach(moveInCircle);
 		}, 1000);

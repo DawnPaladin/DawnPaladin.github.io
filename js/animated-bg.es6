@@ -53,8 +53,8 @@ const animatedBg = function() {
 		exports.stage.update();
 		return shape;
 	}
-	exports.createShapes = function(shapeZone, shapeType, quantity) {
-		const {minX, maxX, minY, maxY} = shapeZone
+	exports.createShapes = function(shapeType, quantity) {
+		const {minX, maxX, minY, maxY} = shapeZone;
 		const shapes = [];
 		for (let i = 0; i < quantity; i++) {
 			const x = (maxX - minX) * Math.random() + minX;
@@ -219,6 +219,12 @@ const animatedBg = function() {
 			}
 		}
 	};
+	const shapeZone = {
+		minX: 800,
+		maxX: 1000,
+		minY: 100,
+		maxY: 300
+	};
 	exports.shapeCycle = {
 		shapes: ["circle", "square", "triangle"],
 		index: 0,
@@ -287,7 +293,7 @@ const animatedBg = function() {
 								const leaf = exports.registry.dockingTree.leaves.pop();
 								attractShape(leaf, currentShape);
 							}
-							const newShapes = exports.createShapes(shapeZone, currentShape, 3);
+							const newShapes = exports.createShapes(currentShape, 3);
 							newShapes.forEach(moveInCircle);
 							exports.shapes = exports.shapes.concat(newShapes);
 							exports.shapeCycle.advance();
@@ -329,16 +335,10 @@ const animatedBg = function() {
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[3].x, 0);
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[6].x, 0);
 		exports.registry.dockingTree.lastNodeWithABranch = 6;
-		const shapeZone = {
-			minX: 800,
-			maxX: 1000,
-			minY: 100,
-			maxY: 300
-		};
-		exports.shapes = exports.createShapes(shapeZone, "random", 18);
-		exports.shapes.push(...exports.createShapes(shapeZone, "square", 3));
-		exports.shapes.push(...exports.createShapes(shapeZone, "circle", 3));
-		exports.shapes.push(...exports.createShapes(shapeZone, "triangle", 3));
+		exports.shapes = exports.createShapes("random", 18);
+		exports.shapes.push(...exports.createShapes("square", 3));
+		exports.shapes.push(...exports.createShapes("circle", 3));
+		exports.shapes.push(...exports.createShapes("triangle", 3));
 		window.setTimeout(function() {
 			exports.shapes.forEach(moveInCircle);
 		}, 1000);
