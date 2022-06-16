@@ -232,6 +232,17 @@ var animatedBg = function () {
 			}
 		}
 	};
+	exports.shapeCycle = {
+		shapes: ["circle", "square", "triangle"],
+		index: 0,
+		getCurrentShape: function getCurrentShape() {
+			return this.shapes[this.index];
+		},
+		advance: function advance() {
+			this.index++;
+			if (this.index >= this.shapes.length) this.index = 0;
+		}
+	};
 	exports.run = function () {
 		var _exports$shapes, _exports$shapes2, _exports$shapes3;
 
@@ -259,6 +270,7 @@ var animatedBg = function () {
 			var shapeIndex = exports.shapes.findIndex(function (shape) {
 				return shape.type == shapeType;
 			});
+			if (shapeIndex == -1) throw new Error("Can't find shape of type " + shapeType); // TODO: remove
 
 			var _exports$shapes$splic = exports.shapes.splice(shapeIndex, 1),
 			    _exports$shapes$splic2 = _slicedToArray(_exports$shapes$splic, 1),
@@ -292,16 +304,19 @@ var animatedBg = function () {
 						if (trunkLength - intervalBetweenBranches >= exports.registry.dockingTree.lastNodeWithABranch) {
 							exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[trunkLength].x, 0);
 							exports.registry.dockingTree.lastNodeWithABranch = trunkLength;
+							var currentShape = exports.shapeCycle.getCurrentShape();
 							while (exports.registry.dockingTree.leaves.length > 0) {
 								var leaf = exports.registry.dockingTree.leaves.pop();
-								attractShape(leaf);
+								attractShape(leaf, currentShape);
 							}
-							var newShapes = exports.createShapes(shapeZone, "random", 3);
+							var newShapes = exports.createShapes(shapeZone, currentShape, 3);
 							newShapes.forEach(moveInCircle);
 							exports.shapes = exports.shapes.concat(newShapes);
+							exports.shapeCycle.advance();
 						}
 					});
 					timeOfLastTreeExtension = timeElapsed;
+
 					// auto-throttle rate of drift
 					var nodes = exports.registry.dockingTree.trunk.nodes;
 					var lastNode = nodes[nodes.length - 1];
@@ -349,11 +364,13 @@ var animatedBg = function () {
 		window.setTimeout(function () {
 			exports.shapes.forEach(moveInCircle);
 		}, 1000);
+		var leavesAttached = 0;
 		while (exports.registry.dockingTree.leaves.length > 0) {
 			var leaf = exports.registry.dockingTree.leaves.pop();
-			attractShape(leaf);
+			attractShape(leaf, exports.shapeCycle.getCurrentShape());
+			leavesAttached++;
+			if (leavesAttached % 3 == 0) exports.shapeCycle.advance(); // We want to attract 3 of each shape.
 		}
-		exports.registry.dockingTree.leaves;
 		createjs.Ticker.addEventListener("tick", tick);
 		createjs.Ticker.setFPS(30);
 	}();

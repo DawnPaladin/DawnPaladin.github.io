@@ -219,6 +219,15 @@ const animatedBg = function() {
 			}
 		}
 	};
+	exports.shapeCycle = {
+		shapes: ["circle", "square", "triangle"],
+		index: 0,
+		getCurrentShape: function() { return this.shapes[this.index] },
+		advance: function() {
+			this.index++;
+			if (this.index >= this.shapes.length) this.index = 0;
+		}
+	}
 	exports.run = function() {
 		createjs.MotionGuidePlugin.install();
 
@@ -243,6 +252,7 @@ const animatedBg = function() {
 		}
 		function extractShape(shapeType) {
 			const shapeIndex = exports.shapes.findIndex(shape => shape.type == shapeType);
+			if (shapeIndex == -1) throw new Error("Can't find shape of type " + shapeType); // TODO: remove
 			const [shape] = exports.shapes.splice(shapeIndex, 1);
 			return shape;
 		}
@@ -272,16 +282,19 @@ const animatedBg = function() {
 						if (trunkLength - intervalBetweenBranches >= exports.registry.dockingTree.lastNodeWithABranch) {
 							exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[trunkLength].x, 0);
 							exports.registry.dockingTree.lastNodeWithABranch = trunkLength;
+							const currentShape = exports.shapeCycle.getCurrentShape();
 							while (exports.registry.dockingTree.leaves.length > 0) {
 								const leaf = exports.registry.dockingTree.leaves.pop();
-								attractShape(leaf);
+								attractShape(leaf, currentShape);
 							}
-							const newShapes = exports.createShapes(shapeZone, "random", 3);
+							const newShapes = exports.createShapes(shapeZone, currentShape, 3);
 							newShapes.forEach(moveInCircle);
 							exports.shapes = exports.shapes.concat(newShapes);
+							exports.shapeCycle.advance();
 						}
 					});
 					timeOfLastTreeExtension = timeElapsed;
+
 					// auto-throttle rate of drift
 					const nodes = exports.registry.dockingTree.trunk.nodes;
 					const lastNode = nodes[nodes.length - 1];
@@ -323,17 +336,19 @@ const animatedBg = function() {
 			maxY: 300
 		};
 		exports.shapes = exports.createShapes(shapeZone, "random", 18);
-		exports.shapes.push(...exports.createShapes(shapeZone, "square", 3))
-		exports.shapes.push(...exports.createShapes(shapeZone, "circle", 3))
-		exports.shapes.push(...exports.createShapes(shapeZone, "triangle", 3))
+		exports.shapes.push(...exports.createShapes(shapeZone, "square", 3));
+		exports.shapes.push(...exports.createShapes(shapeZone, "circle", 3));
+		exports.shapes.push(...exports.createShapes(shapeZone, "triangle", 3));
 		window.setTimeout(function() {
 			exports.shapes.forEach(moveInCircle);
 		}, 1000);
+		let leavesAttached = 0;
 		while (exports.registry.dockingTree.leaves.length > 0) {
 			const leaf = exports.registry.dockingTree.leaves.pop();
-			attractShape(leaf);
+			attractShape(leaf, exports.shapeCycle.getCurrentShape());
+			leavesAttached++;
+			if (leavesAttached % 3 == 0) exports.shapeCycle.advance(); // We want to attract 3 of each shape.
 		}
-		exports.registry.dockingTree.leaves;
 		createjs.Ticker.addEventListener("tick", tick);
 		createjs.Ticker.setFPS(30);
 	}();
