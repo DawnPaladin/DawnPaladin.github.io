@@ -32,7 +32,7 @@ const animatedBg = function() {
 		} else if (shapeType == "square") {
 			shape.graphics.drawRect(-radius, -radius, radius * 2, radius * 2);
 		} else if (shapeType == "triangle") {
-			shape.graphics.drawPolyStar(0, 0, radius, 3, 0, Math.random() * 360);
+			shape.graphics.drawPolyStar(0, 0, radius, 3, 0, 270);
 		} else { // random shape
 			const r = Math.random();
 			if (r > 0.6) {
@@ -47,6 +47,7 @@ const animatedBg = function() {
 		shape.x = x;
 		shape.y = y;
 		shape.alpha = 0;
+		shape.rotation = 0;
 		shape.name = "shape";
 		shape.type = shapeType;
 		exports.stage.addChild(shape);
@@ -261,7 +262,8 @@ const animatedBg = function() {
 			}
 			createjs.Tween.get(shape).to({ alpha: 1 }, 500);
 			createjs.Tween.get(shape).to({
-				guide: { path: myPath }
+				guide: { path: myPath },
+				rotation: shape.rotation + 180,
 			}, 7000)
 				.call(moveInCircle, [shape, i, myPath]);
 		}
@@ -277,8 +279,13 @@ const animatedBg = function() {
 			const destination = container.localToGlobal(leafInfo.x, leafInfo.y);
 			const shape = extractShape(shapeType);
 			destination.x = destination.x + xOffsetPerSecond * 1000; // compensate for drift
-			createjs.Tween.get(shape, { override: true }).to(destination, 1000, Ease.quintInOut).call(animationComplete, [shape, leafInfo, container]);
+			createjs.Tween
+				.get(shape, { override: true })
+				.to(destination, 1000, Ease.quintInOut)
+				.call(animationComplete, [shape, leafInfo, container])
+			;
 			createjs.Tween.get(shape).to({ alpha: 1 }, 500);
+			createjs.Tween.get(shape).to({ rotation: -360*2 }, 1500, Ease.quintInOut);
 		}
 		function tick(event) {
 			const timeElapsed = createjs.Ticker.getTime(true);
