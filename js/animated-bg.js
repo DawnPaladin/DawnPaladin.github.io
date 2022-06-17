@@ -2,11 +2,7 @@
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 document.getElementById('animated-bg').width = window.innerWidth - 20;
 
@@ -73,17 +69,9 @@ var animatedBg = function () {
 
 		var originalShapeType = shapeType;
 		var shapes = [];
-		var shapeCycle = new ShapeCycle("random");
 		for (var i = 0; i < quantity; i++) {
 			var x = (maxX - minX) * Math.random() + minX;
 			var y = (maxY - minY) * Math.random() + minY;
-
-			if (originalShapeType == "random" && quantity > 1) {
-				// We mass-generate random shapes deterministically, because otherwise it's possible to get unlucky and run out of a shape.
-				shapeType = shapeCycle.getCurrentShape();
-				shapeCycle.advance();
-			}
-
 			var shape = exports.createShape(shapeType, x, y, color);
 			shapes.push(shape);
 		}
@@ -261,35 +249,17 @@ var animatedBg = function () {
 		minY: 100,
 		maxY: 300
 	};
-
-	var ShapeCycle = function () {
-		function ShapeCycle(name) {
-			_classCallCheck(this, ShapeCycle);
-
-			this.shapes = ["square", "triangle", "circle"];
-			this.index = 0;
-			this.name = name;
+	exports.shapeCycle = {
+		shapes: ["square", "triangle", "circle"],
+		index: 0,
+		getCurrentShape: function getCurrentShape() {
+			return this.shapes[this.index];
+		},
+		advance: function advance() {
+			this.index++;
+			if (this.index >= this.shapes.length) this.index = 0;
 		}
-
-		_createClass(ShapeCycle, [{
-			key: 'getCurrentShape',
-			value: function getCurrentShape() {
-				// console.log(this.name + ' ' + this.shapes[this.index])
-				return this.shapes[this.index];
-			}
-		}, {
-			key: 'advance',
-			value: function advance() {
-				this.index++;
-				if (this.index >= this.shapes.length) this.index = 0;
-				// console.log(this.name + " next: " + this.getCurrentShape())
-			}
-		}]);
-
-		return ShapeCycle;
-	}();
-
-	exports.shapeCycle = new ShapeCycle("main");
+	};
 	exports.run = function () {
 		var _exports$shapes2, _exports$shapes3, _exports$shapes4;
 
@@ -403,10 +373,10 @@ var animatedBg = function () {
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[3].x, 0);
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[6].x, 0);
 		exports.registry.dockingTree.lastNodeWithABranch = 6;
-		exports.shapes = exports.createShapes("random", 18);
-		(_exports$shapes2 = exports.shapes).push.apply(_exports$shapes2, _toConsumableArray(exports.createShapes("square", 3)));
-		(_exports$shapes3 = exports.shapes).push.apply(_exports$shapes3, _toConsumableArray(exports.createShapes("triangle", 3)));
-		(_exports$shapes4 = exports.shapes).push.apply(_exports$shapes4, _toConsumableArray(exports.createShapes("circle", 3)));
+		exports.shapes = [];
+		(_exports$shapes2 = exports.shapes).push.apply(_exports$shapes2, _toConsumableArray(exports.createShapes("square", 6)));
+		(_exports$shapes3 = exports.shapes).push.apply(_exports$shapes3, _toConsumableArray(exports.createShapes("triangle", 6)));
+		(_exports$shapes4 = exports.shapes).push.apply(_exports$shapes4, _toConsumableArray(exports.createShapes("circle", 6)));
 		exports.shapes.forEach(function (shape) {
 			return moveInCircle(shape);
 		});

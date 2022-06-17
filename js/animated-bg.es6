@@ -58,17 +58,9 @@ const animatedBg = function() {
 		const {minX, maxX, minY, maxY} = shapeZone;
 		const originalShapeType = shapeType;
 		const shapes = [];
-		const shapeCycle = new ShapeCycle("random");
 		for (let i = 0; i < quantity; i++) {
 			const x = (maxX - minX) * Math.random() + minX;
 			const y = (maxY - minY) * Math.random() + minY;
-			
-			if (originalShapeType == "random" && quantity > 1) {
-				// We mass-generate random shapes deterministically, because otherwise it's possible to get unlucky and run out of a shape.
-				shapeType = shapeCycle.getCurrentShape();
-				shapeCycle.advance();
-			}
-
 			const shape = exports.createShape(shapeType, x, y, color);
 			shapes.push(shape);
 		}
@@ -244,23 +236,15 @@ const animatedBg = function() {
 		minY: 100,
 		maxY: 300
 	};
-	class ShapeCycle {
-		constructor(name) {
-			this.shapes = ["square", "triangle", "circle"];
-			this.index = 0;
-			this.name = name;
-		}
-		getCurrentShape() {
-			// console.log(this.name + ' ' + this.shapes[this.index])
-			return this.shapes[this.index];
-		}
-		advance() {
+	exports.shapeCycle = {
+		shapes: ["square", "triangle", "circle"],
+		index: 0,
+		getCurrentShape: function() { return this.shapes[this.index] },
+		advance: function() {
 			this.index++;
 			if (this.index >= this.shapes.length) this.index = 0;
-			// console.log(this.name + " next: " + this.getCurrentShape())
 		}
 	}
-	exports.shapeCycle = new ShapeCycle("main");
 	exports.run = function() {
 		createjs.MotionGuidePlugin.install();
 
@@ -368,10 +352,10 @@ const animatedBg = function() {
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[3].x, 0);
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[6].x, 0);
 		exports.registry.dockingTree.lastNodeWithABranch = 6;
-		exports.shapes = exports.createShapes("random", 18);
-		exports.shapes.push(...exports.createShapes("square", 3));
-		exports.shapes.push(...exports.createShapes("triangle", 3));
-		exports.shapes.push(...exports.createShapes("circle", 3));
+		exports.shapes = [];
+		exports.shapes.push(...exports.createShapes("square", 6));
+		exports.shapes.push(...exports.createShapes("triangle", 6));
+		exports.shapes.push(...exports.createShapes("circle", 6));
 		exports.shapes.forEach((shape) => moveInCircle(shape));
 		let leavesAttached = 0;
 		while (exports.registry.dockingTree.leaves.length > 0) {
