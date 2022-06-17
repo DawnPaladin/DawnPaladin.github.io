@@ -35,9 +35,9 @@ const animatedBg = function() {
 			shape.graphics.drawPolyStar(0, 0, radius, 3, 0, 270);
 		} else { // random shape
 			const r = Math.random();
-			if (r > 0.6) {
+			if (r > 0.7) {
 				return exports.createShape("circle", x, y, color);
-			} else if (r > 0.3) {
+			} else if (r > 0.35) {
 				return exports.createShape("square", x, y, color);
 			} else {
 				return exports.createShape("triangle", x, y, color);
@@ -56,10 +56,19 @@ const animatedBg = function() {
 	}
 	exports.createShapes = function(shapeType, quantity, color) {
 		const {minX, maxX, minY, maxY} = shapeZone;
+		const originalShapeType = shapeType;
 		const shapes = [];
+		const shapeCycle = new ShapeCycle("random");
 		for (let i = 0; i < quantity; i++) {
 			const x = (maxX - minX) * Math.random() + minX;
 			const y = (maxY - minY) * Math.random() + minY;
+			
+			if (originalShapeType == "random" && quantity > 1) {
+				// We mass-generate random shapes deterministically, because otherwise it's possible to get unlucky and run out of a shape.
+				shapeType = shapeCycle.getCurrentShape();
+				shapeCycle.advance();
+			}
+
 			const shape = exports.createShape(shapeType, x, y, color);
 			shapes.push(shape);
 		}
@@ -235,15 +244,23 @@ const animatedBg = function() {
 		minY: 100,
 		maxY: 300
 	};
-	exports.shapeCycle = {
-		shapes: ["circle", "square", "triangle"],
-		index: 0,
-		getCurrentShape: function() { return this.shapes[this.index] },
-		advance: function() {
+	class ShapeCycle {
+		constructor(name) {
+			this.shapes = ["square", "triangle", "circle"];
+			this.index = 0;
+			this.name = name;
+		}
+		getCurrentShape() {
+			// console.log(this.name + ' ' + this.shapes[this.index])
+			return this.shapes[this.index];
+		}
+		advance() {
 			this.index++;
 			if (this.index >= this.shapes.length) this.index = 0;
+			// console.log(this.name + " next: " + this.getCurrentShape())
 		}
 	}
+	exports.shapeCycle = new ShapeCycle("main");
 	exports.run = function() {
 		createjs.MotionGuidePlugin.install();
 
@@ -269,7 +286,7 @@ const animatedBg = function() {
 		}
 		function extractShape(shapeType) {
 			const shapeIndex = exports.shapes.findIndex(shape => shape.type == shapeType);
-			if (shapeIndex == -1) throw new Error("Can't find shape of type " + shapeType); // TODO: remove
+			// if (shapeIndex == -1) throw new Error("Can't find shape of type " + shapeType);
 			const [shape] = exports.shapes.splice(shapeIndex, 1);
 			return shape;
 		}
@@ -311,7 +328,7 @@ const animatedBg = function() {
 							}
 							const newShapes = exports.createShapes(currentShape, 3);
 							newShapes.forEach((shape) => moveInCircle(shape));
-							exports.shapes = exports.shapes.concat(newShapes);
+							exports.shapes.push(...newShapes);
 							exports.shapeCycle.advance();
 						}
 					});
@@ -353,12 +370,12 @@ const animatedBg = function() {
 		exports.registry.dockingTree.lastNodeWithABranch = 6;
 		exports.shapes = exports.createShapes("random", 18);
 		exports.shapes.push(...exports.createShapes("square", 3));
-		exports.shapes.push(...exports.createShapes("circle", 3));
 		exports.shapes.push(...exports.createShapes("triangle", 3));
+		exports.shapes.push(...exports.createShapes("circle", 3));
 		exports.shapes.forEach((shape) => moveInCircle(shape));
 		let leavesAttached = 0;
 		while (exports.registry.dockingTree.leaves.length > 0) {
-			const leaf = exports.registry.dockingTree.leaves.pop();
+			const leaf = exports.registry.dockingTree.leaves.shift();
 			attractShape(leaf, exports.shapeCycle.getCurrentShape());
 			leavesAttached++;
 			if (leavesAttached % 3 == 0) exports.shapeCycle.advance(); // We want to attract 3 of each shape.
