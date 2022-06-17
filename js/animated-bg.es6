@@ -254,7 +254,7 @@ const animatedBg = function() {
 
 		function moveInCircle(shape, i, myPath) {
 			const variance = 50;
-			if (!myPath || myPath.length !== 27) { // if myPath isn't being passed in from a previous call
+			if (!myPath || myPath.length !== 18) { // if myPath isn't being passed in from a previous call
 				var myPath = exports.circlePath(
 					exports.plusOrMinus(shapeZone.minX, variance), exports.plusOrMinus(shapeZone.minY, variance), exports.plusOrMinus(shapeZone.maxX, variance), exports.plusOrMinus(shapeZone.maxY, variance)
 				);
@@ -344,10 +344,10 @@ const animatedBg = function() {
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[3].x, 0);
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[6].x, 0);
 		exports.registry.dockingTree.lastNodeWithABranch = 6;
-		exports.shapes = exports.createShapes("random", 18, "yellow");
-		exports.shapes.push(...exports.createShapes("square", 3, "red"));
-		exports.shapes.push(...exports.createShapes("circle", 3, "red"));
-		exports.shapes.push(...exports.createShapes("triangle", 3, "red"));
+		exports.shapes = exports.createShapes("random", 18);
+		exports.shapes.push(...exports.createShapes("square", 3));
+		exports.shapes.push(...exports.createShapes("circle", 3));
+		exports.shapes.push(...exports.createShapes("triangle", 3));
 		exports.shapes.forEach((shape) => moveInCircle(shape));
 		let leavesAttached = 0;
 		while (exports.registry.dockingTree.leaves.length > 0) {

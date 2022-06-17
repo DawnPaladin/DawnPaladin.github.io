@@ -271,7 +271,7 @@ var animatedBg = function () {
 
 		function moveInCircle(shape, i, myPath) {
 			var variance = 50;
-			if (!myPath || myPath.length !== 27) {
+			if (!myPath || myPath.length !== 18) {
 				// if myPath isn't being passed in from a previous call
 				var myPath = exports.circlePath(exports.plusOrMinus(shapeZone.minX, variance), exports.plusOrMinus(shapeZone.minY, variance), exports.plusOrMinus(shapeZone.maxX, variance), exports.plusOrMinus(shapeZone.maxY, variance));
 			}
@@ -367,10 +367,10 @@ var animatedBg = function () {
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[3].x, 0);
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[6].x, 0);
 		exports.registry.dockingTree.lastNodeWithABranch = 6;
-		exports.shapes = exports.createShapes("random", 18, "yellow");
-		(_exports$shapes = exports.shapes).push.apply(_exports$shapes, _toConsumableArray(exports.createShapes("square", 3, "red")));
-		(_exports$shapes2 = exports.shapes).push.apply(_exports$shapes2, _toConsumableArray(exports.createShapes("circle", 3, "red")));
-		(_exports$shapes3 = exports.shapes).push.apply(_exports$shapes3, _toConsumableArray(exports.createShapes("triangle", 3, "red")));
+		exports.shapes = exports.createShapes("random", 18);
+		(_exports$shapes = exports.shapes).push.apply(_exports$shapes, _toConsumableArray(exports.createShapes("square", 3)));
+		(_exports$shapes2 = exports.shapes).push.apply(_exports$shapes2, _toConsumableArray(exports.createShapes("circle", 3)));
+		(_exports$shapes3 = exports.shapes).push.apply(_exports$shapes3, _toConsumableArray(exports.createShapes("triangle", 3)));
 		exports.shapes.forEach(function (shape) {
 			return moveInCircle(shape);
 		});
