@@ -253,7 +253,7 @@ const animatedBg = function() {
 		createjs.MotionGuidePlugin.install();
 
 		const Ease = createjs.Ease;
-		const xOffsetPerTick = -0.025;
+		const xOffsetPerTick = -0.0245;
 		const treeExtensionInterval = 2000;
 		const intervalBetweenBranches = 3;
 		let timeOfLastTreeExtension = 0;
@@ -357,27 +357,26 @@ const animatedBg = function() {
 						}
 					});
 					timeOfLastTreeExtension = timeElapsed;
-
-					// auto-throttle rate of drift
-					const nodes = exports.registry.dockingTree.trunk.nodes;
-					const lastNode = nodes[nodes.length - 1];
-					const treeTip = exports.registry.dockingTree.object.localToGlobal(lastNode.x, lastNode.y);
-					//console.log("Tree tip:", treeTip.x);
-					if (treeTip.x < 350) {
-						exports.registry.dockingTree.xCorrection += 0.5;
-						//console.log("Docking tree x-correction raised to", exports.registry.dockingTree.xCorrection);
-					} else if (treeTip.x > 355) {
-						exports.registry.dockingTree.xCorrection -= 1;
-						//console.log("Docking tree x-correction lowered to", exports.registry.dockingTree.xCorrection);
-					}
 				}
+
+				// auto-throttle rate of drift
+				const nodes = exports.registry.dockingTree.trunk.nodes;
+				const lastNode = nodes[nodes.length - 1];
+				const treeTip = exports.registry.dockingTree.object.localToGlobal(lastNode.x, lastNode.y);
+				// console.log("Tree tip:", treeTip.x);
+				if (treeTip.x < 10 || treeTip.x > 600) { // reset if tree gets far outside its area
+					exports.registry.dockingTree.xCorrection += 350 - treeTip.x;
+					console.log("treeTip:", treeTip.x, "Docking tree x-correction reset to", exports.registry.dockingTree.xCorrection)
+				} 
+				if (treeTip.x < 300) { // gentle nudge if it's close
+					exports.registry.dockingTree.xCorrection += 0.5;
+					console.log("treeTip: ",treeTip.x, "Docking tree x-correction raised to", exports.registry.dockingTree.xCorrection);
+				} else if (treeTip.x > 400) {
+					exports.registry.dockingTree.xCorrection -= 1;
+					console.log("treeTip: ",treeTip.x, "Docking tree x-correction lowered to", exports.registry.dockingTree.xCorrection);
+				}
+				
 			} // end if paused
-			window.addEventListener('blur', function() {
-				createjs.Ticker.setPaused(true);
-			});
-			window.addEventListener('focus', function() {
-				createjs.Ticker.setPaused(false);
-			});
 			exports.stage.update();
 		}
 
