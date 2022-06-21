@@ -265,8 +265,6 @@ var animatedBg = function () {
 		}
 	};
 	exports.run = function () {
-		var _exports$shapes2, _exports$shapes3, _exports$shapes4;
-
 		createjs.MotionGuidePlugin.install();
 
 		var Ease = createjs.Ease;
@@ -407,12 +405,27 @@ var animatedBg = function () {
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[6].x, 0);
 		exports.registry.dockingTree.lastNodeWithABranch = 6;
 		exports.shapes = [];
-		(_exports$shapes2 = exports.shapes).push.apply(_exports$shapes2, _toConsumableArray(exports.createShapes("square", 6)));
-		(_exports$shapes3 = exports.shapes).push.apply(_exports$shapes3, _toConsumableArray(exports.createShapes("triangle", 6)));
-		(_exports$shapes4 = exports.shapes).push.apply(_exports$shapes4, _toConsumableArray(exports.createShapes("circle", 6)));
-		exports.shapes.forEach(function (shape) {
-			return moveInCircle(shape);
-		});
+		function generateInitialShapes(shapeType, quantity, delay) {
+			function generateShapes(shapeType, quantity) {
+				var _exports$shapes2;
+
+				var shapes = exports.createShapes(shapeType, quantity);
+				shapes.forEach(function (shape) {
+					return moveInCircle(shape);
+				});
+				(_exports$shapes2 = exports.shapes).push.apply(_exports$shapes2, _toConsumableArray(shapes));
+			}
+			if (delay) {
+				setTimeout(function () {
+					generateShapes(shapeType, quantity);
+				}, delay);
+			} else {
+				generateShapes(shapeType, quantity);
+			}
+		}
+		generateInitialShapes("square", 6, 0);
+		generateInitialShapes("circle", 6, 0);
+		generateInitialShapes("triangle", 6, 0);
 		var leavesAttached = 0;
 		while (exports.registry.dockingTree.leaves.length > 0) {
 			var leaf = exports.registry.dockingTree.leaves.shift();
@@ -420,6 +433,9 @@ var animatedBg = function () {
 			leavesAttached++;
 			if (leavesAttached % 3 == 0) exports.shapeCycle.advance(); // We want to attract 3 of each shape.
 		}
+		generateInitialShapes("square", 6, 500);
+		generateInitialShapes("circle", 6, 1000);
+		generateInitialShapes("triangle", 6, 1500);
 		createjs.Ticker.addEventListener("tick", tick);
 		createjs.Ticker.setFPS(30);
 	}();

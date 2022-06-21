@@ -387,10 +387,21 @@ const animatedBg = function() {
 		exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[6].x, 0);
 		exports.registry.dockingTree.lastNodeWithABranch = 6;
 		exports.shapes = [];
-		exports.shapes.push(...exports.createShapes("square", 6));
-		exports.shapes.push(...exports.createShapes("triangle", 6));
-		exports.shapes.push(...exports.createShapes("circle", 6));
-		exports.shapes.forEach((shape) => moveInCircle(shape));
+		function generateInitialShapes(shapeType, quantity, delay) {
+			function generateShapes(shapeType, quantity) {
+				const shapes = exports.createShapes(shapeType, quantity);
+				shapes.forEach((shape) => moveInCircle(shape));
+				exports.shapes.push(...shapes);
+			}
+			if (delay) {
+				setTimeout(() => { generateShapes(shapeType, quantity) }, delay);
+			} else {
+				generateShapes(shapeType, quantity);
+			}
+		}
+		generateInitialShapes("square", 6, 0);
+		generateInitialShapes("circle", 6, 0);
+		generateInitialShapes("triangle", 6, 0);
 		let leavesAttached = 0;
 		while (exports.registry.dockingTree.leaves.length > 0) {
 			const leaf = exports.registry.dockingTree.leaves.shift();
@@ -398,6 +409,9 @@ const animatedBg = function() {
 			leavesAttached++;
 			if (leavesAttached % 3 == 0) exports.shapeCycle.advance(); // We want to attract 3 of each shape.
 		}
+		generateInitialShapes("square", 6, 500);
+		generateInitialShapes("circle", 6, 1000);
+		generateInitialShapes("triangle", 6, 1500);
 		createjs.Ticker.addEventListener("tick", tick);
 		createjs.Ticker.setFPS(30);
 	}();
