@@ -96,7 +96,7 @@ const animatedBg = function() {
 		exports.registry.dockingTree.branches = [];
 		exports.registry.dockingTree.leaves = [];
 	};
-	exports.extendDockingTree = function(treeLength, callback = function() {}) {
+	exports.extendDockingTree = function(treeLength, callback = function(param) {}) {
 		for (let i = 0; i < treeLength; i++) {
 			const trunk = exports.registry.dockingTree.trunk.object;
 			const trunkSegment = new createjs.Shape();
@@ -109,7 +109,9 @@ const animatedBg = function() {
 			trunkNode.graphics.beginFill(treeColor).drawPolyStar(0, 0, nodeRadius, 6, 0).moveTo(exports.registry.trunkCursor + trunkSegmentLength);
 			trunk.addChild(trunkNode);
 			createjs.Tween.get(trunkSegment).to({ x: exports.registry.trunkCursor }, 1000, createjs.Ease.quintInOut);
-			createjs.Tween.get(trunkNode).to({ x: exports.registry.trunkCursor + trunkSegmentLength }, 1000, createjs.Ease.quintInOut).call(callback);
+			createjs.Tween.get(trunkNode)
+				.to({ x: exports.registry.trunkCursor + trunkSegmentLength }, 1000, createjs.Ease.quintInOut)
+				.call(callback);
 			const registryEntry = {
 				type: "trunkSegmentDescription",
 				x: exports.registry.trunkCursor + trunkSegmentLength,
@@ -121,7 +123,7 @@ const animatedBg = function() {
 		}
 		exports.stage.update();
 	};
-	exports.buildDescendingBranch = function(xOrigin, yOrigin) {
+	exports.buildDescendingBranch = function(xOrigin, yOrigin, callback = function() {}) {
 		const buildLeaf = function(xOrigin, yOrigin) {
 			const stemWidth = 2;
 			const stemLength = trunkSegmentLength;
@@ -200,6 +202,8 @@ const animatedBg = function() {
 		}
 		exports.registry.dockingTree.branches.push(branchRegistryEntry);
 		exports.stage.update();
+
+		createjs.Tween.get().wait(1000).call(callback);
 	};
 	// Returns a series of 9 X/Y coordinates describing a circle path.
 	exports.circlePath = function(minX, minY, maxX, maxY) {
@@ -249,7 +253,7 @@ const animatedBg = function() {
 		createjs.MotionGuidePlugin.install();
 
 		const Ease = createjs.Ease;
-		const xOffsetPerSecond = -0.025;
+		const xOffsetPerTick = -0.025;
 		const treeExtensionInterval = 2000;
 		const intervalBetweenBranches = 3;
 		let timeOfLastTreeExtension = 0;
@@ -274,14 +278,38 @@ const animatedBg = function() {
 			const [shape] = exports.shapes.splice(shapeIndex, 1);
 			return shape;
 		}
-		function attractShape(leafInfo, shapeType) {
+		function drawConnectingLine(shape, leaf) {
+			const line = new createjs.Shape();
+			line.graphics.setStrokeStyle(2).beginStroke(treeColor);
+			const xDestination = leaf.x - (xOffsetPerTick * 1000); // target where the leaf is now instead of where it's tweening to
+			line.leafEnd  = line.graphics.moveTo(xDestination, leaf.y).command;
+			line.shapeEnd = line.graphics.lineTo(shape.x, shape.y    ).command;
+			line.graphics.endStroke();
+			exports.stage.addChild(line);
+
+			createjs.Tween.get(line.leafEnd ).to({x: leaf.x           }, 1000, Ease.linear    );
+			createjs.Tween.get(line.leafEnd ).to({           y: leaf.y}, 1000, Ease.quintInOut);
+			createjs.Tween.get(line.shapeEnd).to({x: leaf.x, y: leaf.y}, 1000, Ease.quintInOut);
+
+			shape.line = line; // we'll need this reference so we can delete the line when the animation is complete
+			return line;
+		}
+		function animationComplete(shape, leaf, container) {
+			shape.x = leaf.x;
+			shape.y = leaf.y;
+			if (shape.line) exports.stage.removeChild(shape.line);
+			container.addChild(shape);
+		}
+		function attractShape(leafInfo, shapeType, enableConnectingLine) {
 			const leafObj = leafInfo.object;
 			const container = leafObj.parent;
 			const destination = container.localToGlobal(leafInfo.x, leafInfo.y);
 			const shape = extractShape(shapeType);
-			destination.x = destination.x + xOffsetPerSecond * 1000; // compensate for drift
-			createjs.Tween
-				.get(shape, { override: true })
+			destination.x = destination.x + xOffsetPerTick * 1000; // compensate for drift
+
+			if (enableConnectingLine) drawConnectingLine(shape, destination);
+
+			createjs.Tween.get(shape, { override: true })
 				.to(destination, 1000, Ease.quintInOut)
 				.call(animationComplete, [shape, leafInfo, container])
 			;
@@ -294,7 +322,7 @@ const animatedBg = function() {
 			let driftLock = false;
 			if (!createjs.Ticker.getPaused()) {
 				// drift tree to the left
-				const xOffset = timeElapsed * xOffsetPerSecond + exports.registry.dockingTree.xCorrection;
+				const xOffset = timeElapsed * xOffsetPerTick + exports.registry.dockingTree.xCorrection;
 				exports.registry.dockingTree.object.x = xOffset;
 
 				// extend tree periodically
@@ -303,17 +331,18 @@ const animatedBg = function() {
 					exports.removeOffstage();
 					exports.extendDockingTree(1, function() {
 						if (trunkLength - intervalBetweenBranches >= exports.registry.dockingTree.lastNodeWithABranch) {
-							exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[trunkLength].x, 0);
-							exports.registry.dockingTree.lastNodeWithABranch = trunkLength;
-							const currentShape = exports.shapeCycle.getCurrentShape();
-							while (exports.registry.dockingTree.leaves.length > 0) {
-								const leaf = exports.registry.dockingTree.leaves.pop();
-								attractShape(leaf, currentShape);
-							}
-							const newShapes = exports.createShapes(currentShape, 3);
-							newShapes.forEach((shape) => moveInCircle(shape));
-							exports.shapes.push(...newShapes);
-							exports.shapeCycle.advance();
+							exports.buildDescendingBranch(exports.registry.dockingTree.trunk.nodes[trunkLength].x, 0, function() {
+								exports.registry.dockingTree.lastNodeWithABranch = trunkLength;
+								const currentShape = exports.shapeCycle.getCurrentShape();
+								while (exports.registry.dockingTree.leaves.length > 0) {
+									const leaf = exports.registry.dockingTree.leaves.pop();
+									attractShape(leaf, currentShape, true);
+								}
+								const newShapes = exports.createShapes(currentShape, 3);
+								newShapes.forEach((shape) => moveInCircle(shape));
+								exports.shapes.push(...newShapes);
+								exports.shapeCycle.advance();
+							});
 						}
 					});
 					timeOfLastTreeExtension = timeElapsed;
@@ -339,11 +368,6 @@ const animatedBg = function() {
 				createjs.Ticker.setPaused(false);
 			});
 			exports.stage.update();
-		}
-		function animationComplete(shape, leaf, container) {
-			shape.x = leaf.x;
-			shape.y = leaf.y;
-			container.addChild(shape);
 		}
 
 		exports.initDockingTree(150);
