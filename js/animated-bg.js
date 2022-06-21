@@ -308,17 +308,25 @@ var animatedBg = function () {
 			line.graphics.endStroke();
 			exports.stage.addChild(line);
 
+			var grabber = new createjs.Shape();
+			grabber.graphics.setStrokeStyle(2).beginStroke(treeColor).drawCircle(0, 0, nodeRadius);
+			grabber.set({ x: shape.x, y: shape.y });
+			exports.stage.addChild(grabber);
+
 			createjs.Tween.get(line.leafEnd).to({ x: leaf.x }, 1000, Ease.linear);
 			createjs.Tween.get(line.leafEnd).to({ y: leaf.y }, 1000, Ease.quintInOut);
 			createjs.Tween.get(line.shapeEnd).to({ x: leaf.x, y: leaf.y }, 1000, Ease.quintInOut);
+			createjs.Tween.get(grabber).to({ x: leaf.x, y: leaf.y }, 1000, Ease.quintInOut);
 
-			shape.line = line; // we'll need this reference so we can delete the line when the animation is complete
+			shape.line = line; // we'll need these references so we can delete
+			shape.grabber = grabber; // the line and grabber when the animation is complete
 			return line;
 		}
 		function animationComplete(shape, leaf, container) {
 			shape.x = leaf.x;
 			shape.y = leaf.y;
 			if (shape.line) exports.stage.removeChild(shape.line);
+			if (shape.grabber) exports.stage.removeChild(shape.grabber);
 			container.addChild(shape);
 		}
 		function attractShape(leafInfo, shapeType, enableConnectingLine) {
